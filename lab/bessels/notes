@@ -1,0 +1,14 @@
+graph interpretation:
+
+the yellow vertical  line is the variance of population.
+the red vertical  line is the average of variances(divide by n) in samples
+the blue vertical  line is the average of variances(divide by n-1) in samples
+
+the blueline is closer the yellowline - this demonstrates
+that the average of variance is closer to the true population variance.
+
+that is why we use bessel's correction.
+
+
+red (color is bit different because of opacity)histogram centers left of the true variance -- underestimate.
+blue (color is bit different because of opacity) histogram centers around the true variance.
