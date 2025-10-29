@@ -1,0 +1,13 @@
+---
+title: "to_be_explored"
+output: html_document
+---
+
+1 
+
+In a regression model of 2 predictors, how is squared sum of reg is computed for each one manually. 
+As shown in the ANOVA table. Cannot understand CHATGPT explanation.
+
+2 
+
+

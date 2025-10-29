@@ -9,7 +9,7 @@ y   <- 1 + 0.5*x + 0.3*x^2 + err       # true relation is curved
 
 mB <- lm(y ~ x)  # wrongly fit a straight line
 
-png("violates_plots.png", width = 1200, height = 550)
+
 par(mfrow = c(1, 3))
 # 1) Residuals vs Fitted: curved pattern + fan shape (increasing spread)
 hist(resid(mB))
@@ -21,7 +21,5 @@ abline(h = 0, col = "red")
 # 2) Normal Q-Q: heavy tails deviate from the line
 qqnorm(resid(mB), main = "B: Normal Q-Q Plot")
 qqline(resid(mB), col = "red")
-dev.off()
-cat("Plot saved to violates_plots.png\n")
 
 summary(mB)$r.squared

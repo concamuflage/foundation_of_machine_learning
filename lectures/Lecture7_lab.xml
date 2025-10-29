@@ -1,0 +1,27 @@
+
+  Predict the insurance charges as a function of age, sex, region, body mass index, number of children and smoking status.
+
+  You can use multiple linear regression to find out if there’s an association between dependent and independent variables in this model.
+  You can also use one-way analysis of variance to compare group means.
+
+Data Description:
+Medical Cost Personal Dataset
+
+The dataset that we will analyze in this assignment is dataset that describes medical costs of people in the US based on the following factors:
+
+Age - age of primary beneficiary
+BMI – insurance contractor gender – female or male
+Children – number of children covered by health insurance
+Smoker – smoking status – yes or no
+Region – beneficiary’s residential area in the US – northeast, southeast, southwest, northwest
+Charges – individual medical costs billed by health insurance
+
+The dataset has been loaded from: https://www.kaggle.com/mirichoi0218/insurance
+and reduced to 500 participants.
+
+
+Questions:
+- Calculate the least squares regression equation that predicts insurance charges from age.
+- Then, separate simple linear regression that calculates charges from bmi.
+- Calculate the least square regression that predicts insurance charges from age and bmi.
+- Formally test whether age is a predictor associated with insurance charges at the alpha = 0.05 level.

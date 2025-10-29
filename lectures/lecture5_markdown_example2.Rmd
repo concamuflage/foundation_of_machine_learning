@@ -1,0 +1,94 @@
+---
+title: "lecture6_new Mark Down"
+output:
+  html_document: default
+  pdf_document: default
+date: '2022-10-13'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r cars, echo =TRUE}
+library(ISLR)
+summary(Hitters)   # Data of baseball players, including Salary which we try to predict here.
+summary(cars)
+```
+## Three options
+- echo = FALSE/TRUE - show the code
+- eval = FALSE/TRUE - show the results of the code
+- include = FALSE/TRUE - show the code and the results
+
+# Header
+## Header 2
+### Header 3
+
+
+**bold with two space/next line**  
+__bold__  
+*italic*  
+
+![]() include whatever inside the prenteses to the backet like a picture or hyperlink  
+[BU-link](https://www.bu.edu)  
+![image](/Users/alizadeh/BostonUniversity/CS555_FoundationsML/Lectures/lecture5_mrd.png)  
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+
+```
+
+add code - choose "insert chunk" from "code" tab at the menu
+
+```{r}
+
+```
+
+commets here
+
+```{r setup2, include=FALSE}
+Hitters = na.omit(Hitters)
+with(Hitters, sum(is.na(Salary)))
+```
+Best Subset Regression.
+Using "leaps" library.
+
+```{r pressure0, echo=FALSE}
+library(leaps)
+regfit_full = regsubsets(Salary ~ . , data = Hitters) 
+summary(regfit_full)
+```
+By default goes to the subset of size 8
+Let us increase that to 19 - all the variables.
+
+
+```{r pressure2, echo=FALSE}
+regfit_full = regsubsets(Salary ~ . , data = Hitters , nvmax=19) 
+reg.summary = summary(regfit_full)
+names(reg.summary)          #Get names of the object
+plot(reg.summary$cp , xlab="Number of Variables" , ylab = "Cp")
+which.min(reg.summary$cp)
+```
+
+
+```{r pressure3, echo=FALSE}
+plot(regfit_full , scale= "Cp")
+coef(regfit_full , 10)
+```
+
+
