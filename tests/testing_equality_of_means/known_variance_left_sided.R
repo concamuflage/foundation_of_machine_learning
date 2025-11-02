@@ -2,10 +2,10 @@
 # use Z test
 
 
-# hypothesis (two sided)
+# hypothesis (left sided)
 
-# H0: mu0 = mu1
-# H1: mu0 != mu1
+# H0: mu0 >=mu1
+# H1: mu0 < mu1
 
 # data
 tires_A <- c(66.4, 61.6, 60.5, 59.1, 63.6, 61.4, 62.5, 64.4, 60.7)
@@ -25,13 +25,13 @@ sample_size_2 = 7
 z_statistic = (mean_1 - mean_2)/sqrt(sd_1^2/sample_size_1 + sd_2^2/sample_size_2)
 z_statistic
 # calculate the critical value
-z_critical = qnorm(1-alpha/2)
+z_critical = qnorm(alpha)
 z_critical
 # calculate the p_value
-p_value =2* (1 - pnorm(z_statistic))
+p_value = pnorm(z_statistic)
 p_value
 
-if (abs(z_statistic) > abs(z_critical) ){
+if (z_statistic < z_critical) {
   cat("reject")
 } else {
   cat("fail to reject \n")
@@ -41,4 +41,3 @@ if (p_value < alpha){
 } else {
   cat("fail to reject")
 }
-

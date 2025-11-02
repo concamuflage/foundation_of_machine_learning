@@ -2,7 +2,7 @@
 # use Z test
 
 
-# hypothesis (one sided)
+# hypothesis (right sided)
 
 # H0: mu0 <= mu1
 # H1: mu0 > mu1
@@ -14,11 +14,11 @@ alpha = 0.05
 
 # sample 1
 mean_1 = mean(tires_A)
-sd_1 = 3
+sd_1 = 3 # do not put variance here by mistake
 sample_size_1 = 9
 # sample 2
 mean_2 = mean(tires_B)
-sd_2 = 4
+sd_2 = 4 # do not put variance here by mistake
 sample_size_2 = 7 
 
 # calculate the statistic

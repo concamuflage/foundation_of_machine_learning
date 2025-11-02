@@ -1,17 +1,16 @@
 # Testing Equality of Means of Two Normal Populations With known variances
 # use Z test
-# trying to prove the claim that the difference is bigger than a certain number.
 
 
-# hypothesis (left_sided)
+# hypothesis (one sided)
 
-# H0: mu0 - mu1 >= difference
-# H1: mu0 - mu1 < difference
+# H0: mu0 <= mu1
+# H1: mu0 > mu1
 
 # data
 tires_A <- c(66.4, 61.6, 60.5, 59.1, 63.6, 61.4, 62.5, 64.4, 60.7)
 tires_B <- c(58.2, 60.4, 55.2, 62.0, 57.3, 58.7, 56.1)
-alpha = 0.05
+alpha = 0.05 
 
 # sample 1
 mean_1 = mean(tires_A)
