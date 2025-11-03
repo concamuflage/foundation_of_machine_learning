@@ -27,20 +27,59 @@ sample_size_2 = 50
 # calculate the statistic
 z_statistic = (mean_1 - mean_2)/sqrt(sd_1^2/sample_size_1 + sd_2^2/sample_size_2)
 z_statistic
-# calculate the critical value
-z_critical = qnorm(1-alpha/2)
+
+# two sided
+cat("two sided test\n")
+
+z_critical= qnorm(1-alpha/2)
 z_critical
-# calculate the p_value
-p_value =2* (1 - pnorm(z_statistic))
-p_value
+p_value = 2*(1-pnorm(abs(z_statistic)))
+p_value 
 
 if (abs(z_statistic) > abs(z_critical) ){
-  cat("reject")
+  cat("reject\n")
 } else {
   cat("fail to reject \n")
 }
 if (p_value < alpha){
-  cat("reject")
+  cat("reject\n")
 } else {
-  cat("fail to reject")
+  cat("fail to reject\n")
+}
+
+# right sided
+cat("right sided test\n")
+z_critical= qnorm(1-alpha)
+z_critical
+p_value = 1 - pnorm(z_statistic)
+p_value
+
+if (z_statistic > z_critical){
+  cat("reject\n")
+} else {
+  cat("fail to reject \n")
+}
+if (p_value < alpha){
+  cat("reject\n")
+} else {
+  cat("fail to reject\n")
+}
+
+
+# left sided
+cat("left sided test\n")
+z_critical= qnorm(alpha)
+z_critical
+p_value = pnorm(z_statistic)
+p_value 
+
+if (z_statistic < z_critical){
+  cat("reject\n")
+} else {
+  cat("fail to reject \n")
+}
+if (p_value < alpha){
+  cat("reject\n")
+} else {
+  cat("fail to reject\n")
 }

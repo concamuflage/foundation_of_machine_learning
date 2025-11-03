@@ -1,3 +1,5 @@
+source("compare.R")
+
 # script for t test
 
 # plug in the numbers
@@ -24,16 +26,7 @@ t_critical
 p_value = 2*(1-pt(abs(t_statistic),sample_size -1))
 p_value 
 
-if (abs(t_statistic) > abs(t_critical) ){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
+compareTwoSided(t_statistic,t_critical,p_value,alpha)
 
 # right sided
 cat("right sided test\n")
@@ -42,16 +35,7 @@ t_critical
 p_value = 1 - pt(t_statistic,sample_size -1)
 p_value
 
-if (t_statistic > t_critical ){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
+compareRightSided(t_statistic,t_critical,p_value,alpha)
 
 
 # left sided
@@ -61,15 +45,6 @@ t_critical
 p_value = pt(t_statistic,sample_size -1)
 p_value 
 
-if (t_statistic < t_critical ){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
+compareLeftSided(t_statistic,t_critical,p_value,alpha)
 
 

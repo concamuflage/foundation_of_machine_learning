@@ -1,3 +1,5 @@
+source("compare.R")
+
 # script for z test
 
 # conditions:
@@ -25,17 +27,8 @@ z_critical= qnorm(1-alpha/2)
 z_critical
 p_value = 2*(1-pnorm(abs(z_statistic)))
 p_value 
+compareTwoSided(z_statistic,z_critical,p_value,alpha)
 
-if (abs(z_statistic) > abs(z_critical) ){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
 
 # right sided
 cat("right sided test\n")
@@ -43,17 +36,8 @@ z_critical= qnorm(1-alpha)
 z_critical
 p_value = 1 - pnorm(z_statistic)
 p_value
+compareRightSided(z_statistic,z_critical,p_value,alpha)
 
-if (z_statistic > z_critical){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
 
 
 # left sided
@@ -62,16 +46,8 @@ z_critical= qnorm(alpha)
 z_critical
 p_value = pnorm(z_statistic)
 p_value 
+compareLeftSided(z_statistic,z_critical,p_value,alpha)
 
-if (z_statistic < z_critical){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
+
 
 

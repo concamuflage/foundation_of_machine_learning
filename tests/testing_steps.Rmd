@@ -1,0 +1,18 @@
+---
+title: "testing_steps"
+output: html_document
+---
+
+1 State the hypothesis
+2 Choose the correct statistic
+3 State the decision rule
+4 Calculate the statistic, critical and p_value
+5 Conclusion: reject or fail to reject.
+
+Notes:
+1 equal sign is always included in the H0
+2 H0 and h1 must cover all the scenarios. For example, the following hypothesis
+is wrong:
+H0: mu = 5
+H1: mu > 5
+
