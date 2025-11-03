@@ -1,4 +1,4 @@
-
+source("compare.r")
 # for one way anova pairwise test
 # without assuming equal population variances for the two groups.
 
@@ -8,8 +8,6 @@
 data = read.csv("data/smoking_SBP.csv")
 head(data)
 summary(data)
-
-
 
 # hypothesis
 # h0: group_one and group_two have the same means
@@ -61,16 +59,7 @@ t_critical
 p_value = 2*(1-pt(abs(t_statistic),df = df_welch)) # result 0.000349153
 p_value 
 
-if (abs(t_statistic) > abs(t_critical) ){
-  cat("reject\n")
-} else {
-  cat("fail to reject \n")
-}
-if (p_value < alpha){
-  cat("reject\n")
-} else {
-  cat("fail to reject\n")
-}
+compareTwoSided(t_statistic,t_critical,p_value,alpha)
 
 # -----------------------------------------------------
 # using the built in method
