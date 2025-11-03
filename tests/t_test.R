@@ -18,33 +18,38 @@ alpha = 0.05
 
 t_statistic = (sample_mean - mu0) /(sample_sd/sqrt(sample_size))
 
+df = sample_size -1
+
 # two sided
 cat("two sided test\n")
 
-t_critical = qt(1-alpha/2,sample_size -1)
+t_critical = qt(1-alpha/2,df)
 t_critical 
-p_value = 2*(1-pt(abs(t_statistic),sample_size -1))
+p_value = 2*(1-pt(abs(t_statistic),df))
 p_value 
 
-compareTwoSided(t_statistic,t_critical,p_value,alpha)
+compareTwoSided(t_statistic,t_critical)
+comparePvalueAlpha(p_value,alpha)
 
 # right sided
 cat("right sided test\n")
-t_critical = qt(1-alpha,sample_size -1)
+t_critical = qt(1-alpha,df)
 t_critical 
-p_value = 1 - pt(t_statistic,sample_size -1)
+p_value = 1 - pt(t_statistic,df)
 p_value
 
-compareRightSided(t_statistic,t_critical,p_value,alpha)
+compareRightSided(t_statistic,t_critical)
+comparePvalueAlpha(p_value,alpha)
 
 
 # left sided
 cat("left sided test\n")
-t_critical = qt(alpha,sample_size -1)
+t_critical = qt(alpha,df)
 t_critical 
-p_value = pt(t_statistic,sample_size -1)
+p_value = pt(t_statistic,df)
 p_value 
 
-compareLeftSided(t_statistic,t_critical,p_value,alpha)
+compareLeftSided(t_statistic,t_critical)
+comparePvalueAlpha(p_value,alpha)
 
 

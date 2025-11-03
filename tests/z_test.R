@@ -27,7 +27,8 @@ z_critical= qnorm(1-alpha/2)
 z_critical
 p_value = 2*(1-pnorm(abs(z_statistic)))
 p_value 
-compareTwoSided(z_statistic,z_critical,p_value,alpha)
+compareTwoSided(z_statistic,z_critical)
+comparePvalueAlpha(p_value,alpha)
 
 
 # right sided
@@ -36,7 +37,8 @@ z_critical= qnorm(1-alpha)
 z_critical
 p_value = 1 - pnorm(z_statistic)
 p_value
-compareRightSided(z_statistic,z_critical,p_value,alpha)
+compareRightSided(z_statistic,z_critical)
+comparePvalueAlpha(p_value,alpha)
 
 
 
@@ -46,7 +48,8 @@ z_critical= qnorm(alpha)
 z_critical
 p_value = pnorm(z_statistic)
 p_value 
-compareLeftSided(z_statistic,z_critical,p_value,alpha)
+compareLeftSided(z_statistic,z_critical)
+comparePvalueAlpha(p_value,alpha)
 
 
 

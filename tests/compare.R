@@ -1,18 +1,17 @@
 # helper functions to compare a statistic and critical value
 
 # for two sided test.
-compareTwoSided = function(statistic,critical,p_value,alpha){
+compareTwoSided = function(statistic,critical){
   cat("two sided test\n")
   if (abs(statistic) > abs(critical) ){
     cat("reject H0 by statistic\n")
   } else {
     cat("fail to reject H0 by statistic \n")
   }
-  comparePvalueAlpha(p_value,alpha)
 }
 
 # for right sided test
-compareRightSided = function(statistic,critical,p_value,alpha){
+compareRightSided = function(statistic,critical){
   cat("right sided test\n")
   
   if (statistic > critical){
@@ -20,11 +19,10 @@ compareRightSided = function(statistic,critical,p_value,alpha){
   } else {
     cat("fail to reject H0 by statistic \n")
   }
-  comparePvalueAlpha(p_value,alpha)
 }
 
 # for left sided test
-compareLeftSided = function(statistic,critical,p_value,alpha){
+compareLeftSided = function(statistic,critical){
 
   cat("left sided test \n")
   
@@ -33,7 +31,6 @@ compareLeftSided = function(statistic,critical,p_value,alpha){
   } else {
     cat("fail to reject H0 by statistic \n")
   }
-  comparePvalueAlpha(p_value,alpha)
 }
 
 comparePvalueAlpha = function(p_value,alpha) {
