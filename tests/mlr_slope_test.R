@@ -16,7 +16,13 @@ number_of_predictors = 3
 
 # -------------------edit section--------------------------
 
-# -------global f test----------
+# -------global f test-------------------------------------
+
+# test if the model is significant
+# in other words, if SSreg(explained variance) is far bigger than SSres(unexplained variance)
+# h0: all the slopes equal to 0. 
+
+
 # add all the Sum sq for each weight,excluding residuals
 anova_table <- anova(model)
 SSreg <- sum(anova_table$"Sum Sq"[1:number_of_predictors])
