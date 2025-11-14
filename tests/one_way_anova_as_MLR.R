@@ -2,6 +2,7 @@
 # the slopes are differences in means with the base group
 # H0: all the slopes are 0. (In other words, the means of all the groups are the same.)
 
+# -----------edit section -----------------------------------------------------
 data = read.csv("data/smoking_SBP.csv")
 attach(data)
 head(data)
@@ -18,12 +19,15 @@ data$d3 = ifelse(data$group == "Never smoker",1,0 )
 model0 = lm(SBP ~ d1 +d2 +d3,data = data) 
 # to check if the slope is significant/if the differences in mean with the base group is significant
 # in other words, check the p_value for each predictor. 
-summary(model0)
+
+# -----------edit section -----------------------------------------------------
+
+summary(model0) # the F_value and p_value in this table is the same as the one aov()
+
 anova(model0)
 
 
-> anova(model0)
-Analysis of Variance Table
+# Analysis of Variance Table
 
 #Response: SBP
 #           Df  Sum Sq Mean Sq F value    Pr(>F)    

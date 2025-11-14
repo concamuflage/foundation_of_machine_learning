@@ -9,7 +9,7 @@ source("compare.R")
 # h1: at least two means are different.
 
 # ------------------- change variables here ------------------------
-data = read.csv("data/smoking_SBP.csv")
+data = read.csv("data/student_iq.csv")
 alpha = 0.05
 total_number_of_groups = length(unique(data$group))
 model = aov(data$SBP~ factor(data$group),data = data) 

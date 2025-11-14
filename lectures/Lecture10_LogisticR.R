@@ -10,32 +10,86 @@ summary(Default)
 names(Default)
 
 head(Default$student)
+head(Default)
 Default$studentBinFlag = ifelse(Default$student=="Yes", 1, 0) # Change students to binary number
 
 attach(Default)
 
 glm(default ~ studentBinFlag, data=Default, family=binomial )
 
+#Coefficients:
+#   (Intercept)  studentBinFlag  
+# -3.5041          0.4049 
+
+# -3.5041 intercept, 
+#  0.4049 the slope for studentBinFlag variable.
+
 # Prob for default for a student
 exp(-3.5041+0.4049*1)/(1+exp(-3.5041+0.4049))
 # Prob for default for a non-student
 exp(-3.5041+0.4049*0)/(1+exp(-3.5041+0.4049*0))
 
-#
-sum( (Default$student == 'Yes') *(Default$default == 'Yes') )
+# the total number of students who defaulted.
+sum( (Default$student == 'Yes') *(Default$default == 'Yes') ) 
+# the total number of non-students who defaulted.
 sum( (Default$student == 'No') *(Default$default == 'Yes') )
+# the total number of students who didn't default.
 sum( (Default$student == 'Yes') *(Default$default == 'No') )
 
+# the probability calculated is close to the following calculation of probability.
+# total number of defaulted students / total numder of students.
+127/(127+2817)
+
+# plot summary
+# default is marked in red
+# default has no relationship with income
+# default has a relationship with balance.
 
 plot(balance, income, col=default)
 
+# higher balance, more likely to default.
 glm(default ~ balance , data=Default , family=binomial)
 
+# if it is a student, more likely to default.
 glm(default ~ student , data=Default , family=binomial)
 
+# after adding other variables, the student's coefficient becomes negative. 
+# meaning a student is less likely default than a non-student, which contradicts
+# the previous model. This is called Simpson's paradox and caused by correlation between
+# the predictors.
 
 m= glm(default ~ . , data=Default , family=binomial)
 summary(m)
+
+
+# --------------------------------------------------------------
+# Why the 'student' coefficient becomes negative in multivariable logistic regression
+# --------------------------------------------------------------
+
+# 1. Correlation between predictors
+# - Students tend to have higher balances, and balance is strongly correlated with default.
+#   • Students: high balance → more defaults
+#   • Non-students: lower balance → fewer defaults
+#
+# - In the simple model (default ~ student), the 'student' variable acts as a proxy for high balances.
+#   It absorbs the effect of balance on default.
+#
+# - When 'balance' is added to the model, logistic regression separates the effects:
+#   • balance → main driver of default risk
+#   • student → after controlling for balance, students actually default less often
+#
+# --------------------------------------------------------------
+# 2. Simpson’s paradox in action
+# --------------------------------------------------------------
+# - When you ignore 'balance', it appears that:
+#     "Students default more often."
+#
+# - But once you hold 'balance' constant, you find that:
+#     "Given the same balance, students default less often."
+#
+# - The overall (aggregate) trend and the within-group trend move in opposite directions
+#   because of confounding — 'student' and 'balance' are correlated.
+# --------------------------------------------------------------
 
 #########################################################
 ### Logistic Regression - Module 6, Example 3
