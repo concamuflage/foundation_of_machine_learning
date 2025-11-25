@@ -42,7 +42,7 @@ high_density_df <- rename(
   weight_1 = WTPH2YR ,
   high_density_level = LBDHDD
 )
-high_density_df <- select(high_density_df,SEQN,weight_1,high_density_df)
+high_density_df <- select(high_density_df,SEQN,weight_1,high_density_level)
 
 
 # ----- processing the low density and triglyceride info ----------
@@ -96,9 +96,22 @@ dim(result)
 colSums(is.na(result))
 # remove all the rows with at least 1 missing information.
 result <- result[complete.cases(result), ]
-result
+head(result)
+dim(result)
+
+
+# remove rows with coronary code 7 and 9
+result <- subset(result, !(coronary %in% c(7, 9)))
+dim(result)
+
+# remove rows with  code "77" = "Refused", "99" = "Don't know"
+result <- subset(result, !(marital %in% c(77, 99)))
+dim(result)
+
 
 write.csv(result, file = "cleaned_data.csv", row.names = FALSE)
+
+
 
 
 
