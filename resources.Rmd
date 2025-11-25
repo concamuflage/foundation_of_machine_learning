@@ -1,0 +1,8 @@
+---
+title: "resources"
+output: html_document
+---
+
+Authors of the textbook explaining the book.
+
+https://www.dataschool.io/15-hours-of-expert-machine-learning-videos/

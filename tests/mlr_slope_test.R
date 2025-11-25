@@ -51,4 +51,15 @@ comparePvalueAlpha(p_value,alpha)
 # you don't have to these values by two as this is one sided.
 
 
+# two sided
+cat("two sided test\n")
+# slope/ standard_error of the slope.
+t_statistic =             # check t_value in the summary(model)
+
+df = number_of_observations - number_of_predictors -1
+t_critical = qt(1-alpha/2,df)
+t_critical 
+p_value = 2*(1-pt(abs(t_statistic),df))
+p_value 
+
 

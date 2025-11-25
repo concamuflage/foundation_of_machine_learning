@@ -38,7 +38,7 @@ __bold__
 
 ![]() include whatever inside the prenteses to the backet like a picture or hyperlink  
 [BU-link](https://www.bu.edu)  
-![image](/Users/alizadeh/BostonUniversity/CS555_FoundationsML/Lectures/lecture5_mrd.png)  
+![image](violates_plots.png)  
 ## Including Plots
 
 You can also embed plots, for example:

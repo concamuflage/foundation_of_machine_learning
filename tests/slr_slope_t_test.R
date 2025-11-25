@@ -28,7 +28,7 @@ anova(model)
 
 
 
-# ---------------F_test ---------------------------
+# ---------------t_test ---------------------------
 
 anova_table <- anova(model)
 SSreg <- anova_table$"Sum Sq"[1]

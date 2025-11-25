@@ -1,0 +1,7 @@
+---
+title: "Term Project"
+output: html_document
+author: "Liangmi Zhang"
+date: "November 24, 2025"
+---
+
