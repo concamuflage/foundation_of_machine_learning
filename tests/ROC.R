@@ -10,7 +10,7 @@ m2<-glm(data$event ~ data$chol + data$sex + data$age, family="binomial")
 
 # using model with chol and sex and age 
 data$prob <-predict(m2, type = 
-                      "response") # type = "response" asks to calculate probabilities.
+                      "response") # type = "response" asks to calculate probabilities, instead of the linear score
 
 
 # ROC Curve 

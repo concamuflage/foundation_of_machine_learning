@@ -3,7 +3,15 @@ source("compare.R")
 
 # given two sample proportions, test if they are equal at at certain alpha level
 
-# ----------edit area --------------
+# --------------edit area if you are given a dataset-------------------
+
+#number_of_males = nrow(subset(data, sex == 1 ))
+#number_of_females = nrow(subset(data, sex == 2 ))
+#number_of_positive_in_males = nrow(subset(data, sex == 1 & temp_level == 1))
+# number_of_positive_in_females = nrow(subset(data, sex == 2 & temp_level == 1))
+
+
+# ----------edit area if you are given the numbers --------------
 
 sample_size_one = 320
 sample_size_two = 360

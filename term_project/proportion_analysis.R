@@ -103,7 +103,7 @@ pie(
 # Coronary labels (valid responses only)
 coronary_labels <- c(
   "1" = "Yes",
-  "2" = "No"
+  "0" = "No" # original value 2
 )
 
 # Count

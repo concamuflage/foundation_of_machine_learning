@@ -52,10 +52,10 @@ low_density_df <- rename(
   low_density_df,
   weight_2 = WTSAF2YR,
   triglyceride_level = LBXTLG,
-  low_cholesterol_level = LBDLDLN
+  low_density_level = LBDLDLN
 )
 
-low_density_df <- select(low_density_df, SEQN, weight_2,triglyceride_level,low_cholesterol_level)
+low_density_df <- select(low_density_df, SEQN, weight_2,triglyceride_level,low_density_level)
 
 # ------processing the total --------------------
 total_cholesterol_df = read.csv("TCHOL_L.csv")
@@ -107,6 +107,10 @@ dim(result)
 # remove rows with  code "77" = "Refused", "99" = "Don't know"
 result <- subset(result, !(marital %in% c(77, 99)))
 dim(result)
+
+# change value 1 and 2 to 0 and 1 in coronary column
+
+result$coronary[result$coronary == 2] <- 0
 
 
 write.csv(result, file = "cleaned_data.csv", row.names = FALSE)

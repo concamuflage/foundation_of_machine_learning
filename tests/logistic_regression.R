@@ -4,6 +4,9 @@
 ### By: Farshid Alizadeh-Shabdiz
 #### 
 
+# we should convert the categorical column into factor first. 
+
+
 
 library(ISLR)# Default data
 summary(Default)
@@ -14,7 +17,8 @@ head(Default)
 Default$studentBinFlag = ifelse(Default$student=="Yes", 1, 0) # Change students to binary number, no need to convert into a factor.
 attach(Default)
 
-glm(default ~ studentBinFlag, data=Default, family=binomial )
+model = glm(default ~ studentBinFlag, data=Default, family=binomial )
+summary(model) # we should convert studentBinFlag to factor first.
 
 #Coefficients:
 #   (Intercept)  studentBinFlag  

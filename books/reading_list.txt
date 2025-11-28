@@ -1,0 +1,16 @@
+	
+Sampling Design
+
+
+1.	Lohr — Sampling: Design and Analysis
+	2.	Cochran — Sampling Techniques (the bible of sampling methods)
+	3.	Kish — Survey Sampling
+	4.	Levy & Lemeshow — Sampling of Populations
+	5.	Scheaffer — Elementary Survey Sampling
+
+
+Why oversampling affects the intercept?
+Why controls: cases impact the the variance of the beta1?
+
+Applied Logistic Regression. 
+
