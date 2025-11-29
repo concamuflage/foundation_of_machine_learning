@@ -33,8 +33,6 @@ rest  <- data[-index1, ]
 index2 <- createDataPartition(rest$coronary, p = 1/2, list = FALSE)
 validation <- rest[index2, ]
 test <- rest[-index2, ]
-data$race =as.factor(data$race)
-is.factor(data$race)
 
 
 

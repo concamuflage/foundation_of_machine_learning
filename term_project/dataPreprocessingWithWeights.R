@@ -1,4 +1,7 @@
-# data source
+# Important
+
+# WTSAF2YR is for a smaller subsample. WTSAF2YR is none_zero if a person is chosen to be in the fasting subsample and did fast before providing blood specimen.
+# WTPH2YR is a for phlebotomy sample. Anyone who provided blood will have this, no matter they fasted or not.
 
 # People partipated in the nhanes survey between 2021- 2023. 
 # Demo_L records their demographic info
@@ -31,7 +34,7 @@ demographic_df <- rename(
   marital = DMDMARTZ
 )
 # remove useless columns
-demographic_df <- select(demographic_df, SEQN, age, race, gender, marital)
+demographic_df <- select(demographic_df, SEQN, age, race, gender, marital,SDMVPSU,SDMVSTRA)
 
 
 # ----- processing the high density info ----------
@@ -90,27 +93,15 @@ result =left_join(result, low_density_df, by = "SEQN")
 result = left_join(result, total_cholesterol_df, by = "SEQN")
 result = left_join(result, questionnaire_df, by = "SEQN")
 
-head(result)
-dim(result)
+#----- the following demonstrates that the fasting subsample is a smaller subsample than phlebotomy sample.
 
-colSums(is.na(result))
+#  if a person has weight_2, he must has weight_1, so the following will return an empty set.
+filtered_result <- subset(result, !is.na(weight_2) & is.na(weight_1)) 
+# if a person has weight 1, he doesn't necessary has weight2, so the returned set shouldn't be empty.
+filtered_result_2 <- subset(result, !is.na(weight_1) & is.na(weight_2)) 
+filtered_result_2
 
-
-# remove all the rows with at least 1 missing information.
-result <- result[complete.cases(result), ]
-head(result)
-dim(result)
-
-
-# remove rows with coronary code 7 and 9
-result <- subset(result, !(coronary %in% c(7, 9)))
-dim(result)
-
-# remove rows with  code "77" = "Refused", "99" = "Don't know"
-result <- subset(result, !(marital %in% c(77, 99)))
-dim(result)
-
-# change value 1 and 2 to 0 and 1 in coronary column
+# -----minor adjustments-------
 
 result <- result %>%
   mutate(coronary = case_when(
@@ -119,10 +110,10 @@ result <- result %>%
     TRUE                ~ NA_real_
   ))
 
-write.csv(result, file = "cleaned_data.csv", row.names = FALSE)
 
 
+# ---- save the data -------
 
-
+write.csv(result, file = "cleaned_data_with_weights.csv", row.names = FALSE)
 
 

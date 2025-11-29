@@ -64,35 +64,6 @@ result$average_diastolic = rowMeans(
   na.rm = TRUE
 )
 
-
-
-# count the number of high blood pressure cases for age >=18
-# result$BPQ050A == 1 means the answer to the question " are u taking any medication to control your blood pressure"
-# NA|TRUE = TRUE, so NA value in these 3 variables don't bother. 
-# If all of them are NA, then NA$RIDAGEYR will be NA, this will be removed.
-# If one of them is True, then, (result$average_systolic >= 140 |result$average_diastolic >= 90 | result$BPQ050A == 1) is True.
-
-
-count_of_high_blood_pressure <- sum(
-  (result$average_systolic >= 140 |
-     result$average_diastolic >= 90 | result$BPQ050A == 1) &
-    result$RIDAGEYR >= 18,
-  na.rm = TRUE
-)
-
-
-count_of_high_blood_pressure
-
-
-count_of_adults =  sum(
-  result$RIDAGEYR >= 18,
-  na.rm = TRUE
-)
-
-
-proportion = count_of_high_blood_pressure/count_of_adults # 35.1%, which is 0.8% lower than the figure on the webpage. I don't know why.
-proportion
-
 # --------with weights----------------------
 
 # Hypertension indicator (same as CDC tutorial example)
