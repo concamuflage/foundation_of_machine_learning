@@ -27,7 +27,7 @@ test <- rest[-index2, ]
 design_train <- svydesign(
   ids = ~SDMVPSU,
   strata = ~SDMVSTRA,
-  weights = ~weight_1, # using the smaller subsample weight - fasting weight.
+  weights = ~weight_1,
   nest = TRUE,
   data = train
 )
@@ -36,7 +36,7 @@ design_train <- svydesign(
 design_validation <- svydesign(
   ids = ~SDMVPSU,
   strata = ~SDMVSTRA,
-  weights = ~weight_1, # using the smaller subsample weight - fasting weight.
+  weights = ~weight_1, 
   nest = TRUE,
   data = validation
 )
@@ -44,7 +44,7 @@ design_validation <- svydesign(
 design_test <- svydesign(
   ids = ~SDMVPSU,
   strata = ~SDMVSTRA,
-  weights = ~weight_1, # using the smaller subsample weight - fasting weight.
+  weights = ~weight_1, 
   nest = TRUE,
   data = test
 )
