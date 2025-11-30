@@ -1,26 +1,19 @@
 
 # install.packages("caret")
+library(caret)
+library(car)
+library(pROC)
 
 # run logistic regression without considering weights
 
+
 data = read.csv("cleaned_data.csv")
-head(data)
-
-# --------factorize the categorical columns --------------------
-data$race =as.factor(data$race)
-is.factor(data$race)
-data$gender =as.factor(data$gender)
-is.factor(data$gender)
-data$marital =as.factor(data$marital)
-is.factor(data$marital)
-
 
 
 # ------------constructing the train, validation, test set ---------------
 # each one contains 1/3 of the original data
 # in addtion, the proprotion of coronary positive cases are the same.
 
-library(caret)
 
 set.seed(123)   # for reproducibility
 
@@ -34,33 +27,56 @@ index2 <- createDataPartition(rest$coronary, p = 1/2, list = FALSE)
 validation <- rest[index2, ]
 test <- rest[-index2, ]
 
+# -----model with multiple predictors-----------.
+# 1. Fit on training set
+model <- glm(
+  coronary ~ high_density_level + low_density_level + triglyceride_level,
+  family = binomial,
+  data = train
+)
+
+# 2. Predict on *validation* set
+validation$prob <- predict(
+  model,
+  newdata = validation,
+  type = "response"
+)
+
+# 3. ROC on validation set
+
+g <- roc(response = validation$coronary,
+         predictor = validation$prob)
+
+print(g)
+plot(g)
 
 
+# ---------model with one predictor --------------
 
-model = glm( coronary ~ race +gender+marital+ high_density_level+ low_density_level+ total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
-summary(model)
+# --------- 1. Fit model on TRAIN only --------------
 
-model = glm( coronary ~ race +marital+ high_density_level+ low_density_level+ total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
-summary(model)
+model <- glm(
+  coronary ~ low_density_level,
+  family = binomial,
+  data = train
+)
 
-model = glm( coronary ~ race + high_density_level+ low_density_level+ total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
-summary(model)
+# --------- 2. Predict on VALIDATION only -----------
 
-model = glm( coronary ~ high_density_level+ low_density_level+ total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
-summary(model)
+validation$prob <- predict(
+  model,
+  newdata = validation,
+  type = "response"
+)
 
-model = glm( coronary ~ low_density_level + total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
-summary(model)
+# --------- 3. Compute ROC on VALIDATION -----------
 
-model = glm( coronary ~ low_density_level + triglyceride_level,family = binomial, data = train)
-summary(model)
+library(pROC)
 
-model = glm( coronary ~  triglyceride_level,family = binomial, data = train)
-summary(model)
+g <- roc(
+  response  = validation$coronary,
+  predictor = validation$prob
+)
 
-model = glm( coronary ~  high_density_level,family = binomial, data = train)
-summary(model)
-
-model = glm( coronary ~ low_density_level,family = binomial, data = train)
-summary(model)
-
+print(g)
+plot(g)

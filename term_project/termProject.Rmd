@@ -14,7 +14,8 @@ library("svrepmisc")
 library("dplyr")
 library("DT")
 library("caret")
-library(pROC)
+library("pROC")
+library("car")
 ```
 
 # An Analysis of Coronary Heart Disease
@@ -29,7 +30,58 @@ In this section, we try to predict if a person has a coronary heart disease.
 
 ### Logistic Regression Without Using Weights
 
+I ignored the various weights in the dataset because I couldn't figure out what they meant and how to use them.
+To my surprise, ignoring them results in models that randomly predict 0 and 1, no matter how many predictors I chose. 
+
+
+
+``` {R dataPreparationWithoutWeight, echo = FALSE,include = FALSE}
+
+data = read.csv("cleaned_data.csv")
+head(data)
+
+# --------factorize the categorical columns --------------------
+data$race =as.factor(data$race)
+is.factor(data$race)
+data$gender =as.factor(data$gender)
+is.factor(data$gender)
+data$marital =as.factor(data$marital)
+is.factor(data$marital)
+
+```
+
+I tried to use high_density_level,low_density_level,triglyceride_level as variables. This model didn't work.
+
+``` {R fittingModelWithoutWeightMultiplePredictors, echo = TRUE,include = TRUE}
+
+model = glm( coronary ~ high_density_level+ low_density_level+ triglyceride_level,family = binomial, data = data)
+# Get the Area under the curve
+# c-statistics 
+data$prob <-predict(model, type = "response") # type = "response" asks to calculate probabilities, instead of the linear score
+# ROC Curve 
+g <- roc(data$coronary ~ data$prob)
+# Plot the ROC Curve. 
+plot(g)
+```
+
+I tried to use only low_density_level.Neither did this model work. 
+
+``` {R fittingModelWithoutWeightOnePredictor, echo = TRUE,include = TRUE}
+model = glm( coronary ~ = low_density_level,family = binomial, data = data)
+# Get the Area under the curve
+# c-statistics 
+data$prob <-predict(model, type = "response") # type = "response" asks to calculate probabilities, instead of the linear score
+# ROC Curve 
+g <- roc(data$coronary ~ data$prob)
+# Plot the ROC Curve. 
+plot(g)
+```
+
+
 ### Logistic Regression With Weights
+
+After the previous trials, I realized the importance of the weights and decided to use them? but how? In order to learn how to use them, I studied NAHNAES's 
+sample design, a concept that I haven't studied before and struggled to understand. After having an rudimentary understanding of its sample design, the next challenge is how to choose a weight since there are many weights in the dataset. It took me a while to understand the criteria - choose the weight for the smallest subsample if multiple subsamples are used in the analysis. In my case, I have decide which subsample is smaller because I have two: the phlebotomy subsample(people who gave blood specimen) and the fasting subsample (people who are asked to fast). It took me several hours just to decide on this. Finally, I realized that fasting subsample is smaller because they fasted first and then gave blood specimen. Then, I proceeded to use the fasting weight but the models couldn't converge. After some trials, I used the phlebotomy weight, which finally worked.
 
 ```{R loadData,,echo = FALSE,eval = TRUE,include = FALSE}
 result = read.csv("cleaned_data_with_weights.csv")
@@ -37,7 +89,7 @@ result = read.csv("cleaned_data_with_weights.csv")
 
 #### Logistic Regression With Using Weight_2(Fasting Subsample Weight)
 
-According to NHANES analytic guidline, this weight should be used. However, using fasting weight causes the model fail to converge.
+According to NHANES analytic guidline, this weight should be used. However, using fasting weight causes the model fail to converge. The exact reason of the failure requires further study. 
 
 ```{R weight2Prepare,,echo = FALSE,eval = TRUE,include = FALSE }
 result = subset(result, !is.na(result$weight_2))
