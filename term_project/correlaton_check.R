@@ -13,20 +13,20 @@ data$marital =as.factor(data$marital)
 is.factor(data$marital)
 
 
-model = glm( coronary ~ age + race +gender+marital+ high_density_level+ low_density_level+ total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
+model1 = glm( coronary ~ age + race +gender+marital+ high_density_level+ low_density_level+ total_cholesterol_level+ triglyceride_level,family = binomial, data = train)
 summary(model)
 vif(model)
 kappa(model.matrix(model))
 
 # removed total cholesterol because it is calculated from high and low, which indicates high collinearity.
 # 
-model = glm( coronary ~ age + race +gender+marital+ high_density_level+ low_density_level+ triglyceride_level,family = binomial, data = train)
+model2 = glm( coronary ~ age + race +gender+marital+ high_density_level+ low_density_level+ triglyceride_level,family = binomial, data = train)
 summary(model)
 vif(model)
 kappa(model.matrix(model))
 
 # removing all demographic variables
-model = glm( coronary ~ high_density_level+ low_density_level+ triglyceride_level,family = binomial, data = train)
+model3 = glm( coronary ~ high_density_level+ low_density_level+ triglyceride_level,family = binomial, data = train)
 summary(model)
 vif(model)
 kappa(model.matrix(model))
@@ -35,7 +35,7 @@ kappa(model.matrix(model))
 
 # Get the Area under the curve
 # c-statistics 
-data$prob <-predict(model, type = 
+data$prob <-predict(model3, type = 
                       "response") # type = "response" asks to calculate probabilities, instead of the linear score
 
 
@@ -51,11 +51,11 @@ plot(g)
 # ---------use one predictor --------------
 
 # removing all demographic variables
-model = glm( coronary ~ low_density_level,family = binomial, data = train)
+model4 = glm( coronary ~ low_density_level,family = binomial, data = train)
 
 # Get the Area under the curve
 # c-statistics 
-data$prob <-predict(model, type = 
+data$prob <-predict(model4, type = 
                       "response") # type = "response" asks to calculate probabilities, instead of the linear score
 
 
@@ -67,4 +67,6 @@ print(g)
 plot(g)
 
 # Conclusion: This is a very bad model. Need to consider the weights, because there is oversampling. 
+
+
 

@@ -31,8 +31,7 @@ In this section, we try to predict if a person has a coronary heart disease.
 ### Logistic Regression Without Using Weights
 
 I ignored the various weights in the dataset because I couldn't figure out what they meant and how to use them.
-To my surprise, ignoring them results in models that randomly predict 0 and 1, no matter how many predictors I chose. 
-
+To my surprise, ignoring weights results in models that have ROC = 5.While writing this document, I found out that the previous sentence was wrong. My models were bad because of a bug. In my original code, I intended to train data on the training set that was not defined in the script, and was using another dataframe called __train__ from the global environment. After correcting the bug, the ROC looks normal.
 
 
 ``` {R dataPreparationWithoutWeight, echo = FALSE,include = FALSE}
@@ -40,13 +39,17 @@ To my surprise, ignoring them results in models that randomly predict 0 and 1, n
 data = read.csv("cleaned_data.csv")
 head(data)
 
-# --------factorize the categorical columns --------------------
-data$race =as.factor(data$race)
-is.factor(data$race)
-data$gender =as.factor(data$gender)
-is.factor(data$gender)
-data$marital =as.factor(data$marital)
-is.factor(data$marital)
+set.seed(123)   # for reproducibility
+
+# First split: train vs rest (2/3 remain)
+index1 <- createDataPartition(data$coronary, p = 1/3, list = FALSE)
+train <- data[index1, ]
+rest  <- data[-index1, ]
+
+# Second split: validation vs test (each 1/3 of full data)
+index2 <- createDataPartition(rest$coronary, p = 1/2, list = FALSE)
+validation <- rest[index2, ]
+test <- rest[-index2, ]
 
 ```
 
@@ -54,26 +57,59 @@ I tried to use high_density_level,low_density_level,triglyceride_level as variab
 
 ``` {R fittingModelWithoutWeightMultiplePredictors, echo = TRUE,include = TRUE}
 
-model = glm( coronary ~ high_density_level+ low_density_level+ triglyceride_level,family = binomial, data = data)
-# Get the Area under the curve
-# c-statistics 
-data$prob <-predict(model, type = "response") # type = "response" asks to calculate probabilities, instead of the linear score
-# ROC Curve 
-g <- roc(data$coronary ~ data$prob)
-# Plot the ROC Curve. 
+# -----model with multiple predictors-----------.
+# 1. Fit on training set
+model <- glm(
+  coronary ~ high_density_level + low_density_level + triglyceride_level,
+  family = binomial,
+  data = train
+)
+
+# 2. Predict on *validation* set
+validation$prob <- predict(
+  model,
+  newdata = validation,
+  type = "response"
+)
+
+# 3. ROC on validation set
+
+g <- roc(response = validation$coronary,
+         predictor = validation$prob)
+
+g
 plot(g)
 ```
 
 I tried to use only low_density_level.Neither did this model work. 
 
 ``` {R fittingModelWithoutWeightOnePredictor, echo = TRUE,include = TRUE}
-model = glm( coronary ~ = low_density_level,family = binomial, data = data)
-# Get the Area under the curve
-# c-statistics 
-data$prob <-predict(model, type = "response") # type = "response" asks to calculate probabilities, instead of the linear score
-# ROC Curve 
-g <- roc(data$coronary ~ data$prob)
-# Plot the ROC Curve. 
+# --------- 1. Fit model on TRAIN only --------------
+
+model <- glm(
+  coronary ~ low_density_level,
+  family = binomial,
+  data = train
+)
+
+# --------- 2. Predict on VALIDATION only -----------
+
+validation$prob <- predict(
+  model,
+  newdata = validation,
+  type = "response"
+)
+
+# --------- 3. Compute ROC on VALIDATION -----------
+
+library(pROC)
+
+g <- roc(
+  response  = validation$coronary,
+  predictor = validation$prob
+)
+
+g
 plot(g)
 ```
 
@@ -89,7 +125,7 @@ result = read.csv("cleaned_data_with_weights.csv")
 
 #### Logistic Regression With Using Weight_2(Fasting Subsample Weight)
 
-According to NHANES analytic guidline, this weight should be used. However, using fasting weight causes the model fail to converge. The exact reason of the failure requires further study. 
+According to NHANES analytic guideline, this weight should be used. However, using fasting weight causes the model fail to converge. The exact reason of the failure requires further study. 
 
 ```{R weight2Prepare,,echo = FALSE,eval = TRUE,include = FALSE }
 result = subset(result, !is.na(result$weight_2))
@@ -106,7 +142,7 @@ design <- svydesign(
 
 Trying to fit a model with 3 predictors. This model won't converge.
 
-```{R weight2with3predictors,echo = TRUE,eval = TRUE, include = FALSE}
+```{R weight2with3predictors,echo = FALSE,include = FALSE}
 # filter out columns with missing values. We shouldn't subset on the df directly.
 design_sub <- subset(design,
                      !is.na(coronary) &
@@ -116,7 +152,7 @@ design_sub <- subset(design,
 nrow(design_sub)
 ```
 
-```{R weight2with3predictors2,echo = TRUE,eval = TRUE}
+```{R weight2with3predictors2,echo = TRUE,include = TRUE}
 model <- svyglm(
   coronary ~  triglyceride_level + high_density_level +low_density_level ,
   design = design_sub,
@@ -127,14 +163,14 @@ model <- svyglm(
 
 Trying to fit a model with 1 predictor. This model won't converge either.
 
-```{R weight2with1predictor,echo = TRUE,eval = TRUE,include = FALSE}
+```{R weight2with1predictor,echo = FALSE,include = FALSE}
 
 design_sub_2 <- subset(design,
                      !is.na(coronary) &
                        !is.na(triglyceride_level))
 ```
 
-```{R weight2with1predictor2,echo = TRUE,eval = TRUE}
+```{R weight2with1predictor2,echo = TRUE,include = TRUE }
 
 model <- svyglm(
   coronary ~  triglyceride_level,

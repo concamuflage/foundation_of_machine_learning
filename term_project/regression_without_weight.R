@@ -47,7 +47,7 @@ validation$prob <- predict(
 g <- roc(response = validation$coronary,
          predictor = validation$prob)
 
-print(g)
+g
 plot(g)
 
 
@@ -78,5 +78,5 @@ g <- roc(
   predictor = validation$prob
 )
 
-print(g)
+g
 plot(g)
