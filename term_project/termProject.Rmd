@@ -5,3 +5,276 @@ author: "Liangmi Zhang"
 date: "November 24, 2025"
 ---
 
+```{R importlibrary,,echo = FALSE,eval = TRUE,include = FALSE}
+library("haven")
+library("survey")
+library("jtools")
+library("remotes")
+library("svrepmisc")
+library("dplyr")
+library("DT")
+library("caret")
+library(pROC)
+```
+
+# An Analysis of Coronary Heart Disease
+
+## Header 2
+
+## Header 2
+
+## Logistic Regression
+
+In this section, we try to predict if a person has a coronary heart disease.
+
+### Logistic Regression Without Using Weights
+
+### Logistic Regression With Weights
+
+```{R loadData,,echo = FALSE,eval = TRUE,include = FALSE}
+result = read.csv("cleaned_data_with_weights.csv")
+```
+
+#### Logistic Regression With Using Weight_2(Fasting Subsample Weight)
+
+According to NHANES analytic guidline, this weight should be used. However, using fasting weight causes the model fail to converge.
+
+```{R weight2Prepare,,echo = FALSE,eval = TRUE,include = FALSE }
+result = subset(result, !is.na(result$weight_2))
+
+design <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~weight_2, # using the smaller subsample weight - fasting weight.
+  nest = TRUE,
+  data = result
+)
+
+```
+
+Trying to fit a model with 3 predictors. This model won't converge.
+
+```{R weight2with3predictors,echo = TRUE,eval = TRUE, include = FALSE}
+# filter out columns with missing values. We shouldn't subset on the df directly.
+design_sub <- subset(design,
+                     !is.na(coronary) &
+                       !is.na(triglyceride_level) &
+                       !is.na(high_density_level) &
+                       !is.na(low_density_level))
+nrow(design_sub)
+```
+
+```{R weight2with3predictors2,echo = TRUE,eval = TRUE}
+model <- svyglm(
+  coronary ~  triglyceride_level + high_density_level +low_density_level ,
+  design = design_sub,
+  family = quasibinomial()
+)
+
+```
+
+Trying to fit a model with 1 predictor. This model won't converge either.
+
+```{R weight2with1predictor,echo = TRUE,eval = TRUE,include = FALSE}
+
+design_sub_2 <- subset(design,
+                     !is.na(coronary) &
+                       !is.na(triglyceride_level))
+```
+
+```{R weight2with1predictor2,echo = TRUE,eval = TRUE}
+
+model <- svyglm(
+  coronary ~  triglyceride_level,
+  design = design_sub_2,
+  family = quasibinomial()
+)
+
+```
+
+#### Logistic Regression With Using Weight_1(Phlebotomy Subsample Weight)
+
+Since the previous method fails, the Phlebotomy weight is used since it is the weight for the second smallest subsample.
+
+```{R weight1Preparation, echo = FALSE,include = FALSE}
+
+result = subset(result, !is.na(result$weight_1))
+
+# First split: train vs rest (2/3 remain)
+index1 <- createDataPartition(result$SEQN, p = 1/3, list = FALSE)
+train <- result[index1, ]
+rest  <- result[-index1, ]
+
+# Second split: validation vs test (each 1/3 of full data)
+index2 <- createDataPartition(rest$SEQN, p = 1/2, list = FALSE)
+validation <- rest[index2, ]
+test <- rest[-index2, ]
+
+# make the design object for train, validation,test
+design_train <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~weight_1, # using the smaller subsample weight - fasting weight.
+  nest = TRUE,
+  data = train
+)
+
+
+design_validation <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~weight_1, # using the smaller subsample weight - fasting weight.
+  nest = TRUE,
+  data = validation
+)
+
+design_test <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~weight_1, # using the smaller subsample weight - fasting weight.
+  nest = TRUE,
+  data = test
+)
+
+# filter out columns with missing values. 
+# We should subset on the design object directly instead of the the dataframe.
+
+design_train_sub <- subset(design_train,
+                     !is.na(coronary) &
+                       !is.na(high_density_level) &
+                       !is.na(low_density_level))
+nrow(design_train_sub)
+
+design_validation_sub <- subset(design_validation,
+                           !is.na(coronary) &
+                             !is.na(high_density_level) &
+                             !is.na(low_density_level))
+nrow(design_validation_sub)
+
+design_test_sub <- subset(design_test,
+                           !is.na(coronary) &
+                             !is.na(high_density_level) &
+                             !is.na(low_density_level))
+nrow(design_test_sub)
+
+```
+
+##### Logistic Regression With Using Weight_1 and Two Predictors
+
+We fit a model using high_density_level and low_density_level. 
+
+```{R regressionWithWeight_1With2Predictors, echo = TRUE,include = TRUE}
+# --------- model with two predictors -----------------------
+# train model on the train set
+model <- svyglm(
+  coronary ~ high_density_level +low_density_level ,
+  design = design_train_sub,
+  family = quasibinomial()
+)
+
+summary(model)
+
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model, newdata = val_df, type = "response")
+
+roc_val_both <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_1
+)
+
+roc_val_both
+
+plot(roc_val_both)
+
+```
+
+
+##### Logistic Regression With Using Weight_1 and One Predictor
+
+###### With high_density_level
+
+We fit another model with high_density_level.
+
+```{R regressionWithWeight_1With1HDL, echo = TRUE,include = TRUE}
+# train model on the train set
+model <- svyglm(
+  coronary ~ high_density_level ,
+  design = design_train_sub,
+  family = quasibinomial()
+)
+
+summary(model)
+
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model, newdata = val_df, type = "response")
+
+roc_val_HDL <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_1
+)
+
+roc_val_HDL
+plot(roc_val_HDL)
+
+```
+
+###### With low_density_level
+
+We fit another model with low_density_level.
+
+```{R regressionWithWeight_1With1LDL, echo = TRUE,include = TRUE}
+# train model on the train set
+model <- svyglm(
+  coronary ~ low_density_level ,
+  design = design_train_sub,
+  family = quasibinomial()
+)
+
+summary(model)
+
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model, newdata = val_df, type = "response")
+
+roc_val_LDL <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_1
+)
+
+roc_val_LDL
+
+plot(roc_val_LDL)
+
+```
+
+
+From this model, we choose a threshhold that yields the highest accuracy.
+
+``` {R name, echo = TRUE,include = TRUE}
+
+# 1.choose the best threshold for this model and calculate the accuracy. 
+
+roc_obj <- roc(response = val_df$coronary, predictor = val_df$predicted)
+best <- coords(roc_obj, "best", best.method="closest.topleft")
+best
+
+best_threshold <- as.numeric(best$threshold)
+
+# 2. predicted classes using optimal threshold
+val_df$predicted_labels <- ifelse(val_df$predicted >= best_threshold[], 1, 0)
+
+# 3. accuracy
+accuracy <- mean(val_df$predicted_labels == val_df$coronary)
+accuracy
+```
+
+
+

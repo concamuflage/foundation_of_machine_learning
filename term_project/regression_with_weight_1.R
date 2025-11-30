@@ -23,7 +23,7 @@ index2 <- createDataPartition(rest$SEQN, p = 1/2, list = FALSE)
 validation <- rest[index2, ]
 test <- rest[-index2, ]
 
-
+# make the design object for train, validation,test
 design_train <- svydesign(
   ids = ~SDMVPSU,
   strata = ~SDMVSTRA,
@@ -49,7 +49,9 @@ design_test <- svydesign(
   data = test
 )
 
-# filter out columns with missing values. We shouldn't subset on the df directly.
+# filter out columns with missing values. 
+# We should subset on the design object directly instead of the the dataframe.
+
 design_train_sub <- subset(design_train,
                      !is.na(coronary) &
                        !is.na(high_density_level) &
@@ -69,7 +71,7 @@ design_test_sub <- subset(design_test,
 nrow(design_test_sub)
 
 
-# --------- two predictors -----------------------
+# --------- model with two predictors -----------------------
 # train model on the train set
 model <- svyglm(
   coronary ~ high_density_level +low_density_level ,
@@ -92,7 +94,7 @@ roc_val_both <- roc(
 
 plot(roc_val_both)
 
-# --------- one predictor : high density level -----------------------
+# --------- model with one predictor : high density level -----------------------
 
 # train model on the train set
 model <- svyglm(
@@ -116,7 +118,7 @@ roc_val_HDL <- roc(
 
 plot(roc_val_HDL)
 
-# --------- one predictor : low density level -----------------------
+# --------- model one predictor : low density level -----------------------
 
 # train model on the train set
 model <- svyglm(
@@ -143,6 +145,21 @@ plot(roc_val_LDL)
 roc_val_both
 roc_val_HDL
 roc_val_LDL
+
+# choose the best threshold for this model and calculate the accuracy. 
+
+roc_obj <- roc(response = val_df$coronary, predictor = val_df$predicted)
+best <- coords(roc_obj, "best", best.method="closest.topleft")
+best
+
+best_threshold <- as.numeric(best$threshold)
+
+# 2. predicted classes using optimal threshold
+val_df$predicted_labels <- ifelse(val_df$predicted >= best_threshold[], 1, 0)
+
+# 3. accuracy
+accuracy <- mean(val_df$predicted_labels == val_df$coronary)
+accuracy
 
 
 

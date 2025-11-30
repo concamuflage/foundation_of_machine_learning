@@ -48,5 +48,4 @@ model <- svyglm(
   family = quasibinomial()
 )
 
-# -----------try weight 1 ---------------------------------
 
