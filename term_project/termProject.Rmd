@@ -18,11 +18,36 @@ library("pROC")
 library("car")
 ```
 
-# An Analysis of Coronary Heart Disease
+# Prediction of Coronary Heart Disease with Cholesterol and Trigliceride. 
 
-## Header 2
 
-## Header 2
+## Project Inroduction
+
+My lab results showed abnormal cholestrol and triglyceride levels, and the doctor told me that I'm at risk. For this reason,I chose this topic. The initial project plan included doing population parameter analysis too, but it turned out that doing the regression alone took lots of time so the these analysis were given up. 
+
+The main challenge of the project was due to the NHANHE sample design. As a result, NHANHE assigned different weights to different variables/predictors. Understanding the sample design and weights were the most challenging and time-consuming part of this project. 
+
+In a nutshell, this project aims to predict coronary heart disease with high density cholesterol, low density cholesterol and triglyceride.
+
+## Data Introduction.
+
+In 2021- 2023, people partipated in NHANHE's interviews and medical exams.  The organization used multistage sampling to oversample people with certain traits, like certain race, age etc. In addition to other reasons,
+NHANHE assigned weights to some variables. For more info about the sample design and weights, please check the source provided below.
+
+The following five datasets were downloaded from the site and merged together by the sequence column.
+
+Demo_L.csv records their demographic info
+HDL_L.csv records their high density cholesterol info
+TRIGLY_L.csv records the low density cholesterol level and triglyceride levels
+TCHOL_L.csv records the total cholesterol level
+MCQ_L.csv records the whether they had angina, heart attacks, or cardiavascular diseases. 
+
+L indicates the year is between 2021- 2023. All these files have different rows because only a portion of interview participants decide to take certain lab tests.The Demo_L has the most number of rows because all participants need to provide this info. For information about how the data is preprocessed, please check the two data preprocessing scripts in the project folder.
+
+
+[Click Here for Data Source](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Laboratory&Cycle=2021-2023)
+
+
 
 ## Logistic Regression
 
@@ -30,8 +55,7 @@ In this section, we try to predict if a person has a coronary heart disease.
 
 ### Logistic Regression Without Using Weights
 
-I ignored the various weights in the dataset because I couldn't figure out what they meant and how to use them.
-To my surprise, ignoring weights results in models that have ROC = 5.While writing this document, I found out that the previous sentence was wrong. My models were bad because of a bug. In my original code, I intended to train data on the training set that was not defined in the script, and was using another dataframe called __train__ from the global environment. After correcting the bug, the ROC looks normal.
+In the beginning, I ignored the various weights in the dataset because I couldn't figure out what they meant and how to use them. However, my models produced AUC around 5. I thought the poor result was because of the missing weights so I decided to use weights to improve the result. However, when I were writing this file, I found out that the low AUC was because of a bug in my original code. After correcting the bug, the ROC looks normal. The corrected result is provided below.
 
 
 ``` {R dataPreparationWithoutWeight, echo = FALSE,include = FALSE}
@@ -53,7 +77,7 @@ test <- rest[-index2, ]
 
 ```
 
-I tried to use high_density_level,low_density_level,triglyceride_level as variables. This model didn't work.
+Training with 3 predictors
 
 ``` {R fittingModelWithoutWeightMultiplePredictors, echo = TRUE,include = TRUE}
 
@@ -81,7 +105,7 @@ g
 plot(g)
 ```
 
-I tried to use only low_density_level.Neither did this model work. 
+Training with one predictor.
 
 ``` {R fittingModelWithoutWeightOnePredictor, echo = TRUE,include = TRUE}
 # --------- 1. Fit model on TRAIN only --------------
@@ -116,73 +140,157 @@ plot(g)
 
 ### Logistic Regression With Weights
 
-After the previous trials, I realized the importance of the weights and decided to use them? but how? In order to learn how to use them, I studied NAHNAES's 
-sample design, a concept that I haven't studied before and struggled to understand. After having an rudimentary understanding of its sample design, the next challenge is how to choose a weight since there are many weights in the dataset. It took me a while to understand the criteria - choose the weight for the smallest subsample if multiple subsamples are used in the analysis. In my case, I have decide which subsample is smaller because I have two: the phlebotomy subsample(people who gave blood specimen) and the fasting subsample (people who are asked to fast). It took me several hours just to decide on this. Finally, I realized that fasting subsample is smaller because they fasted first and then gave blood specimen. Then, I proceeded to use the fasting weight but the models couldn't converge. After some trials, I used the phlebotomy weight, which finally worked.
+Because of low AUC values due to the bug and my belief that it was caused by ignoring weights, I decided to integrate weights in the regression. In order to learn how to use them, I studied NAHNAES's sample design, a concept that I haven't studied before and struggled to understand. Another challenge was to choose a weight since there were two weights in the dataset. It took me a while to understand the criteria - choose the weight for the smallest subsample if multiple subsamples are used in the analysis. In my case, I needed to decide which subsample was smaller because I had two: the phlebotomy subsample(people who gave blood specimen) and the fasting subsample (people who were asked to fast). It took me several hours just to decide on this. Finally, I found out that fasting subsample was smaller because people in the sample fasted first and then gave blood specimen.
 
-```{R loadData,,echo = FALSE,eval = TRUE,include = FALSE}
-result = read.csv("cleaned_data_with_weights.csv")
-```
 
 #### Logistic Regression With Using Weight_2(Fasting Subsample Weight)
 
-According to NHANES analytic guideline, this weight should be used. However, using fasting weight causes the model fail to converge. The exact reason of the failure requires further study. 
+In the beginning,the models couldn't converge, no matter the number of predictors that I used. This turned out to be another bug that I didn't notice I thought the failure was due to lack of datapoints in the subsample because the fasting subsample was the smallest subsample. However, somehow, the models could converge after some changes that I made, but I lost track of what change I made. 
+
+Regression with weight 2 was presented below. In order to use weight, __svydesign()__ must be used to construct the design object and this object need to be used in the regression. 
+
+```{R loadData2,,echo = FALSE,eval = TRUE,include = FALSE}
+result = read.csv("cleaned_data_with_weights.csv")
+```
+
 
 ```{R weight2Prepare,,echo = FALSE,eval = TRUE,include = FALSE }
 result = subset(result, !is.na(result$weight_2))
+# First split: train vs rest (2/3 remain)
+index1 <- createDataPartition(result$SEQN, p = 1/3, list = FALSE)
+train <- result[index1, ]
+rest  <- result[-index1, ]
 
-design <- svydesign(
+# Second split: validation vs test (each 1/3 of full data)
+index2 <- createDataPartition(rest$SEQN, p = 1/2, list = FALSE)
+validation <- rest[index2, ]
+test <- rest[-index2, ]
+
+# make the design object for train, validation,test
+design_train <- svydesign(
   ids = ~SDMVPSU,
   strata = ~SDMVSTRA,
   weights = ~weight_2, # using the smaller subsample weight - fasting weight.
   nest = TRUE,
-  data = result
+  data = train
 )
 
+
+design_validation <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~weight_2, # using the smaller subsample weight - fasting weight.
+  nest = TRUE,
+  data = validation
+)
+
+design_test <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~weight_2, # using the smaller subsample weight - fasting weight.
+  nest = TRUE,
+  data = test
+)
+
+# filter out columns with missing values. 
+# We should subset on the design object directly instead of the the dataframe.
+
+design_train_sub <- subset(design_train,
+                           !is.na(coronary) &
+                             !is.na(high_density_level) &
+                             !is.na(low_density_level)&
+                             !is.na(triglyceride_level)
+                           )
+nrow(design_train_sub)
+
+design_validation_sub <- subset(design_validation,
+                                !is.na(coronary) &
+                                  !is.na(high_density_level) &
+                                  !is.na(low_density_level)&
+                                  !is.na(triglyceride_level)
+                                
+                                )
+                                  
+nrow(design_validation_sub)
+
+design_test_sub <- subset(design_test,
+                          !is.na(coronary) &
+                            !is.na(high_density_level) &
+                            !is.na(low_density_level)&
+                            !is.na(triglyceride_level))
+nrow(design_test_sub)
+result = subset(result, !is.na(result$weight_2))
+
+
 ```
 
-Trying to fit a model with 3 predictors. This model won't converge.
+Fitting a model 3 predictors
 
-```{R weight2with3predictors,echo = FALSE,include = FALSE}
-# filter out columns with missing values. We shouldn't subset on the df directly.
-design_sub <- subset(design,
-                     !is.na(coronary) &
-                       !is.na(triglyceride_level) &
-                       !is.na(high_density_level) &
-                       !is.na(low_density_level))
-nrow(design_sub)
-```
-
-```{R weight2with3predictors2,echo = TRUE,include = TRUE}
-model <- svyglm(
-  coronary ~  triglyceride_level + high_density_level +low_density_level ,
-  design = design_sub,
+```{R weight2with3predictors,echo = TRUE,include = TRUE}
+# --------- model with 3 predictors -----------------------
+# train model on the train set
+model1 <- svyglm(
+  coronary ~ high_density_level +low_density_level +triglyceride_level  ,
+  design = design_train_sub,
   family = quasibinomial()
 )
 
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model1, newdata = val_df, type = "response")
+
+roc_val_three <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_2
+)
+
+roc_val_three
+
+plot(roc_val_three)
+
 ```
 
-Trying to fit a model with 1 predictor. This model won't converge either.
 
-```{R weight2with1predictor,echo = FALSE,include = FALSE}
+Fitting another model with low_density_cholesterol.
 
-design_sub_2 <- subset(design,
-                     !is.na(coronary) &
-                       !is.na(triglyceride_level))
-```
+```{R weight2with1predictor,echo = TRUE,include = TRUE}
+# --------- model one predictor : low density level -----------------------
 
-```{R weight2with1predictor2,echo = TRUE,include = TRUE }
-
-model <- svyglm(
-  coronary ~  triglyceride_level,
-  design = design_sub_2,
+# train model on the train set
+model5 <- svyglm(
+  coronary ~ low_density_level ,
+  design = design_train_sub,
   family = quasibinomial()
 )
 
+summary(model5)
+
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model5, newdata = val_df, type = "response")
+
+roc_val_LDL <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_2
+)
+
+roc_val_LDL
+plot(roc_val_LDL)
 ```
+
 
 #### Logistic Regression With Using Weight_1(Phlebotomy Subsample Weight)
 
-Since the previous method fails, the Phlebotomy weight is used since it is the weight for the second smallest subsample.
+Since my initial attempts to use weight_2(fast subsample weight), the Phlebotomy weight was used because it was the weight for the second smallest subsample and also our only choice left. 
+
+
+```{R loadData3,,echo = FALSE,eval = TRUE,include = FALSE}
+result = read.csv("cleaned_data_with_weights.csv")
+```
 
 ```{R weight1Preparation, echo = FALSE,include = FALSE}
 
@@ -249,7 +357,7 @@ nrow(design_test_sub)
 
 ##### Logistic Regression With Using Weight_1 and Two Predictors
 
-We fit a model using high_density_level and low_density_level. 
+Fitting a model using high_density_level and low_density_level. The triglyceride_level cannot be used here.
 
 ```{R regressionWithWeight_1With2Predictors, echo = TRUE,include = TRUE}
 # --------- model with two predictors -----------------------
@@ -282,38 +390,6 @@ plot(roc_val_both)
 
 ##### Logistic Regression With Using Weight_1 and One Predictor
 
-###### With high_density_level
-
-We fit another model with high_density_level.
-
-```{R regressionWithWeight_1With1HDL, echo = TRUE,include = TRUE}
-# train model on the train set
-model <- svyglm(
-  coronary ~ high_density_level ,
-  design = design_train_sub,
-  family = quasibinomial()
-)
-
-summary(model)
-
-# predict on the validation set.
-
-val_df <- design_validation_sub$variables
-val_df$predicted <- predict(model, newdata = val_df, type = "response")
-
-roc_val_HDL <- roc(
-  response = val_df$coronary,
-  predictor = val_df$predicted,
-  weights = val_df$weight_1
-)
-
-roc_val_HDL
-plot(roc_val_HDL)
-
-```
-
-###### With low_density_level
-
 We fit another model with low_density_level.
 
 ```{R regressionWithWeight_1With1LDL, echo = TRUE,include = TRUE}
@@ -344,7 +420,13 @@ plot(roc_val_LDL)
 ```
 
 
-From this model, we choose a threshhold that yields the highest accuracy.
+## Conclusion
+
+Even though NHANHE used multistage sampling to oversample certain subgroups the population and they emphasize that weights should be used regression, the impact of not using the weights or using a less ideal weight doesn't have much impact on the prediction results. For a logistic regression with one variable low_density_level, there is not much differences in the AUC value of the fitted models, whether the model used weights or used different weight not. 
+
+
+
+For the last model,a SLR with weight_1, we choose a threshhold that yields the highest accuracy.
 
 ``` {R name, echo = TRUE,include = TRUE}
 

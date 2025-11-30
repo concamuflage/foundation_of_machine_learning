@@ -55,60 +55,93 @@ design_test <- svydesign(
 design_train_sub <- subset(design_train,
                            !is.na(coronary) &
                              !is.na(high_density_level) &
-                             !is.na(low_density_level))
+                             !is.na(low_density_level)&
+                             !is.na(triglyceride_level)
+                           )
 nrow(design_train_sub)
 
 design_validation_sub <- subset(design_validation,
                                 !is.na(coronary) &
                                   !is.na(high_density_level) &
-                                  !is.na(low_density_level))
+                                  !is.na(low_density_level)&
+                                  !is.na(triglyceride_level)
+                                
+                                )
+                                  
 nrow(design_validation_sub)
 
 design_test_sub <- subset(design_test,
                           !is.na(coronary) &
+                            !is.na(coronary) &
                             !is.na(high_density_level) &
-                            !is.na(low_density_level))
+                            !is.na(low_density_level)&
+                            !is.na(triglyceride_level))
 nrow(design_test_sub)
+
+
+# --------- model with 3 predictors -----------------------
+# train model on the train set
+model1 <- svyglm(
+  coronary ~ high_density_level +low_density_level +triglyceride_level  ,
+  design = design_train_sub,
+  family = quasibinomial()
+)
+
+summary(model1)
+
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model1, newdata = val_df, type = "response")
+
+roc_val_three <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_2
+)
+
+plot(roc_val_three)
 
 
 # --------- model with two predictors -----------------------
 # train model on the train set
-model <- svyglm(
+model2 <- svyglm(
   coronary ~ high_density_level +low_density_level ,
   design = design_train_sub,
   family = quasibinomial()
 )
 
-summary(model)
+summary(model2)
 
 # predict on the validation set.
 
 val_df <- design_validation_sub$variables
-val_df$predicted <- predict(model, newdata = val_df, type = "response")
+val_df$predicted <- predict(model2, newdata = val_df, type = "response")
 
 roc_val_both <- roc(
   response = val_df$coronary,
   predictor = val_df$predicted,
   weights = val_df$weight_2
 )
+roc_val_both
 
 plot(roc_val_both)
 
 # --------- model with one predictor : high density level -----------------------
 
 # train model on the train set
-model <- svyglm(
+model3 <- svyglm(
   coronary ~ high_density_level ,
   design = design_train_sub,
   family = quasibinomial()
 )
 
-summary(model)
+summary(model3)
 
 # predict on the validation set.
 
 val_df <- design_validation_sub$variables
-val_df$predicted <- predict(model, newdata = val_df, type = "response")
+val_df$predicted <- predict(model3, newdata = val_df, type = "response")
 
 roc_val_HDL <- roc(
   response = val_df$coronary,
@@ -118,21 +151,47 @@ roc_val_HDL <- roc(
 
 plot(roc_val_HDL)
 
+
+
+# --------- model with one predictor : trigliceride_level -----------------------
+
+# train model on the train set
+model4 <- svyglm(
+  coronary ~ triglyceride_level,
+  design = design_train_sub,
+  family = quasibinomial()
+)
+
+summary(model4)
+
+# predict on the validation set.
+
+val_df <- design_validation_sub$variables
+val_df$predicted <- predict(model4, newdata = val_df, type = "response")
+
+roc_val_trigly <- roc(
+  response = val_df$coronary,
+  predictor = val_df$predicted,
+  weights = val_df$weight_2
+)
+
+plot(roc_val_trigly)
+
 # --------- model one predictor : low density level -----------------------
 
 # train model on the train set
-model <- svyglm(
+model5 <- svyglm(
   coronary ~ low_density_level ,
   design = design_train_sub,
   family = quasibinomial()
 )
 
-summary(model)
+summary(model5)
 
 # predict on the validation set.
 
 val_df <- design_validation_sub$variables
-val_df$predicted <- predict(model, newdata = val_df, type = "response")
+val_df$predicted <- predict(model5, newdata = val_df, type = "response")
 
 roc_val_LDL <- roc(
   response = val_df$coronary,
@@ -142,9 +201,11 @@ roc_val_LDL <- roc(
 
 plot(roc_val_LDL)
 
+roc_val_three
 roc_val_both
 roc_val_HDL
 roc_val_LDL
+roc_val_trigly
 
 # choose the best threshold for this model and calculate the accuracy. 
 

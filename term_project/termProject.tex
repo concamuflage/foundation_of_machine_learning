@@ -1,0 +1,742 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Term Project},
+  pdfauthor={Liangmi Zhang},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Term Project}
+\author{Liangmi Zhang}
+\date{November 24, 2025}
+
+\begin{document}
+\maketitle
+
+\section{An Analysis of Coronary Heart
+Disease}\label{an-analysis-of-coronary-heart-disease}
+
+\subsection{Header 2}\label{header-2}
+
+\subsection{Header 2}\label{header-2-1}
+
+\subsection{Logistic Regression}\label{logistic-regression}
+
+In this section, we try to predict if a person has a coronary heart
+disease.
+
+\subsubsection{Logistic Regression Without Using
+Weights}\label{logistic-regression-without-using-weights}
+
+I ignored the various weights in the dataset because I couldn't figure
+out what they meant and how to use them. However, my models produce AUC
+around 5. I thought the poor result was because of the missing weights
+so I decided to use weights to improve the result. However, when I were
+preparing the RMD file, I found out that the low AUC was because of a
+bug - in my original code, I intended to train data on the training set
+that was not defined in the script, and the script was using another
+dataframe called \textbf{train} from the global environment. After
+correcting the bug, the ROC looks normal. The corrected result is
+provided below.
+
+Training with 3 predictors
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}model with multiple predictors{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}.}
+\CommentTok{\# 1. Fit on training set}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ high\_density\_level }\SpecialCharTok{+}\NormalTok{ low\_density\_level }\SpecialCharTok{+}\NormalTok{ triglyceride\_level,}
+  \AttributeTok{family =}\NormalTok{ binomial,}
+  \AttributeTok{data =}\NormalTok{ train}
+\NormalTok{)}
+
+\CommentTok{\# 2. Predict on *validation* set}
+\NormalTok{validation}\SpecialCharTok{$}\NormalTok{prob }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(}
+\NormalTok{  model,}
+  \AttributeTok{newdata =}\NormalTok{ validation,}
+  \AttributeTok{type =} \StringTok{"response"}
+\NormalTok{)}
+
+\CommentTok{\# 3. ROC on validation set}
+
+\NormalTok{g }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}\AttributeTok{response =}\NormalTok{ validation}\SpecialCharTok{$}\NormalTok{coronary,}
+         \AttributeTok{predictor =}\NormalTok{ validation}\SpecialCharTok{$}\NormalTok{prob)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = validation$coronary, predictor = validation$prob)
+## 
+## Data: validation$prob in 961 controls (validation$coronary 0) < 60 cases (validation$coronary 1).
+## Area under the curve: 0.7247
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(g)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/fittingModelWithoutWeightMultiplePredictors-1.pdf}}
+
+Training with one predictor.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-} 1. Fit model on TRAIN only {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ low\_density\_level,}
+  \AttributeTok{family =}\NormalTok{ binomial,}
+  \AttributeTok{data =}\NormalTok{ train}
+\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-} 2. Predict on VALIDATION only {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\NormalTok{validation}\SpecialCharTok{$}\NormalTok{prob }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(}
+\NormalTok{  model,}
+  \AttributeTok{newdata =}\NormalTok{ validation,}
+  \AttributeTok{type =} \StringTok{"response"}
+\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-} 3. Compute ROC on VALIDATION {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\FunctionTok{library}\NormalTok{(pROC)}
+
+\NormalTok{g }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}
+  \AttributeTok{response  =}\NormalTok{ validation}\SpecialCharTok{$}\NormalTok{coronary,}
+  \AttributeTok{predictor =}\NormalTok{ validation}\SpecialCharTok{$}\NormalTok{prob}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = validation$coronary, predictor = validation$prob)
+## 
+## Data: validation$prob in 961 controls (validation$coronary 0) < 60 cases (validation$coronary 1).
+## Area under the curve: 0.7416
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(g)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/fittingModelWithoutWeightOnePredictor-1.pdf}}
+
+\subsubsection{Logistic Regression With
+Weights}\label{logistic-regression-with-weights}
+
+Because of low AUC value in the initial trials, I decided to incooporate
+weights in the regression. In order to learn how to use them, I studied
+NAHNAES's sample design, a concept that I haven't studied before and
+struggled to understand. Another challenge is how to choose a weight
+since there are many weights in the dataset. It took me a while to
+understand the criteria - choose the weight for the smallest subsample
+if multiple subsamples are used in the analysis. In my case, I needed to
+decide which subsample is smaller because I have two: the phlebotomy
+subsample(people who gave blood specimen) and the fasting subsample
+(people who are asked to fast). It took me several hours just to decide
+on this. Finally, I realized that fasting subsample was smaller because
+people in the sample fasted first and then gave blood specimen.
+
+\paragraph{Logistic Regression With Using Weight\_2(Fasting Subsample
+Weight)}\label{logistic-regression-with-using-weight_2fasting-subsample-weight}
+
+In the beginning,the models couldn't converge, no matter the number of
+predictors that I used. This turned out to be another bug that I didn't
+know. I thought the failure was due to lack of datapoints in the
+subsample because the fasting subsample is the smallest subsample.
+However, somehow, the models could converge after some changes that I
+made, but I forgot to track where I changed. The models are presented
+below.
+
+Trying to fit a model with 3 predictors. This model won't converge.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-} model with 3 predictors {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# train model on the train set}
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{svyglm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ high\_density\_level }\SpecialCharTok{+}\NormalTok{low\_density\_level }\SpecialCharTok{+}\NormalTok{triglyceride\_level  ,}
+  \AttributeTok{design =}\NormalTok{ design\_train\_sub,}
+  \AttributeTok{family =} \FunctionTok{quasibinomial}\NormalTok{()}
+\NormalTok{)}
+
+\CommentTok{\# predict on the validation set.}
+
+\NormalTok{val\_df }\OtherTok{\textless{}{-}}\NormalTok{ design\_validation\_sub}\SpecialCharTok{$}\NormalTok{variables}
+\NormalTok{val\_df}\SpecialCharTok{$}\NormalTok{predicted }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model1, }\AttributeTok{newdata =}\NormalTok{ val\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+
+\NormalTok{roc\_val\_three }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}
+  \AttributeTok{response =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary,}
+  \AttributeTok{predictor =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{predicted,}
+  \AttributeTok{weights =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{weight\_2}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{roc\_val\_three}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = val_df$coronary, predictor = val_df$predicted,     weights = val_df$weight_2)
+## 
+## Data: val_df$predicted in 970 controls (val_df$coronary 0) < 59 cases (val_df$coronary 1).
+## Area under the curve: 0.7521
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(roc\_val\_three)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/weight2with3predictors-1.pdf}}
+
+Fit another model with low\_density\_cholestrol.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-} model one predictor : low density level {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# train model on the train set}
+\NormalTok{model5 }\OtherTok{\textless{}{-}} \FunctionTok{svyglm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ low\_density\_level ,}
+  \AttributeTok{design =}\NormalTok{ design\_train\_sub,}
+  \AttributeTok{family =} \FunctionTok{quasibinomial}\NormalTok{()}
+\NormalTok{)}
+
+\FunctionTok{summary}\NormalTok{(model5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## svyglm(formula = coronary ~ low_density_level, design = design_train_sub, 
+##     family = quasibinomial())
+## 
+## Survey design:
+## subset(design_train, !is.na(coronary) & !is.na(high_density_level) & 
+##     !is.na(low_density_level) & !is.na(triglyceride_level))
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)        0.011181   0.541952   0.021 0.983832    
+## low_density_level -0.033445   0.007259  -4.607 0.000407 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 1.422759)
+## 
+## Number of Fisher Scoring iterations: 7
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# predict on the validation set.}
+
+\NormalTok{val\_df }\OtherTok{\textless{}{-}}\NormalTok{ design\_validation\_sub}\SpecialCharTok{$}\NormalTok{variables}
+\NormalTok{val\_df}\SpecialCharTok{$}\NormalTok{predicted }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model5, }\AttributeTok{newdata =}\NormalTok{ val\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+
+\NormalTok{roc\_val\_LDL }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}
+  \AttributeTok{response =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary,}
+  \AttributeTok{predictor =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{predicted,}
+  \AttributeTok{weights =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{weight\_2}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{roc\_val\_LDL}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = val_df$coronary, predictor = val_df$predicted,     weights = val_df$weight_2)
+## 
+## Data: val_df$predicted in 970 controls (val_df$coronary 0) < 59 cases (val_df$coronary 1).
+## Area under the curve: 0.7417
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(roc\_val\_LDL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/weight2with1predictor-1.pdf}}
+
+\paragraph{Logistic Regression With Using Weight\_1(Phlebotomy Subsample
+Weight)}\label{logistic-regression-with-using-weight_1phlebotomy-subsample-weight}
+
+Since the previous method fails, the Phlebotomy weight is used since it
+is the weight for the second smallest subsample.
+
+\subparagraph{Logistic Regression With Using Weight\_1 and Two
+Predictors}\label{logistic-regression-with-using-weight_1-and-two-predictors}
+
+We fit a model using high\_density\_level and low\_density\_level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-} model with two predictors {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# train model on the train set}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{svyglm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ high\_density\_level }\SpecialCharTok{+}\NormalTok{low\_density\_level ,}
+  \AttributeTok{design =}\NormalTok{ design\_train\_sub,}
+  \AttributeTok{family =} \FunctionTok{quasibinomial}\NormalTok{()}
+\NormalTok{)}
+
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## svyglm(formula = coronary ~ high_density_level + low_density_level, 
+##     design = design_train_sub, family = quasibinomial())
+## 
+## Survey design:
+## subset(design_train, !is.na(coronary) & !is.na(high_density_level) & 
+##     !is.na(low_density_level))
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)         1.338345   0.664742   2.013 0.065262 .  
+## high_density_level -0.023914   0.009549  -2.504 0.026367 *  
+## low_density_level  -0.031691   0.007010  -4.521 0.000575 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 1.38474)
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# predict on the validation set.}
+
+\NormalTok{val\_df }\OtherTok{\textless{}{-}}\NormalTok{ design\_validation\_sub}\SpecialCharTok{$}\NormalTok{variables}
+\NormalTok{val\_df}\SpecialCharTok{$}\NormalTok{predicted }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ val\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+
+\NormalTok{roc\_val\_both }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}
+  \AttributeTok{response =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary,}
+  \AttributeTok{predictor =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{predicted,}
+  \AttributeTok{weights =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{weight\_1}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{roc\_val\_both}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = val_df$coronary, predictor = val_df$predicted,     weights = val_df$weight_1)
+## 
+## Data: val_df$predicted in 941 controls (val_df$coronary 0) < 59 cases (val_df$coronary 1).
+## Area under the curve: 0.7381
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(roc\_val\_both)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/regressionWithWeight_1With2Predictors-1.pdf}}
+
+\subparagraph{Logistic Regression With Using Weight\_1 and One
+Predictor}\label{logistic-regression-with-using-weight_1-and-one-predictor}
+
+With high\_density\_level
+
+We fit another model with high\_density\_level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# train model on the train set}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{svyglm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ high\_density\_level ,}
+  \AttributeTok{design =}\NormalTok{ design\_train\_sub,}
+  \AttributeTok{family =} \FunctionTok{quasibinomial}\NormalTok{()}
+\NormalTok{)}
+
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## svyglm(formula = coronary ~ high_density_level, design = design_train_sub, 
+##     family = quasibinomial())
+## 
+## Survey design:
+## subset(design_train, !is.na(coronary) & !is.na(high_density_level) & 
+##     !is.na(low_density_level))
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(>|t|)   
+## (Intercept)        -1.239641   0.468932  -2.644  0.01927 * 
+## high_density_level -0.032451   0.008964  -3.620  0.00278 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 0.9851106)
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# predict on the validation set.}
+
+\NormalTok{val\_df }\OtherTok{\textless{}{-}}\NormalTok{ design\_validation\_sub}\SpecialCharTok{$}\NormalTok{variables}
+\NormalTok{val\_df}\SpecialCharTok{$}\NormalTok{predicted }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ val\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+
+\NormalTok{roc\_val\_HDL }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}
+  \AttributeTok{response =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary,}
+  \AttributeTok{predictor =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{predicted,}
+  \AttributeTok{weights =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{weight\_1}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{roc\_val\_HDL}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = val_df$coronary, predictor = val_df$predicted,     weights = val_df$weight_1)
+## 
+## Data: val_df$predicted in 941 controls (val_df$coronary 0) < 59 cases (val_df$coronary 1).
+## Area under the curve: 0.5673
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(roc\_val\_HDL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/regressionWithWeight_1With1HDL-1.pdf}}
+
+With low\_density\_level
+
+We fit another model with low\_density\_level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# train model on the train set}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{svyglm}\NormalTok{(}
+\NormalTok{  coronary }\SpecialCharTok{\textasciitilde{}}\NormalTok{ low\_density\_level ,}
+  \AttributeTok{design =}\NormalTok{ design\_train\_sub,}
+  \AttributeTok{family =} \FunctionTok{quasibinomial}\NormalTok{()}
+\NormalTok{)}
+
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## svyglm(formula = coronary ~ low_density_level, design = design_train_sub, 
+##     family = quasibinomial())
+## 
+## Survey design:
+## subset(design_train, !is.na(coronary) & !is.na(high_density_level) & 
+##     !is.na(low_density_level))
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)        0.245026   0.605324   0.405 0.691752    
+## low_density_level -0.033268   0.007198  -4.622 0.000396 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 1.518632)
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# predict on the validation set.}
+
+\NormalTok{val\_df }\OtherTok{\textless{}{-}}\NormalTok{ design\_validation\_sub}\SpecialCharTok{$}\NormalTok{variables}
+\NormalTok{val\_df}\SpecialCharTok{$}\NormalTok{predicted }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ val\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+
+\NormalTok{roc\_val\_LDL }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}
+  \AttributeTok{response =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary,}
+  \AttributeTok{predictor =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{predicted,}
+  \AttributeTok{weights =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{weight\_1}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{roc\_val\_LDL}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## roc.default(response = val_df$coronary, predictor = val_df$predicted,     weights = val_df$weight_1)
+## 
+## Data: val_df$predicted in 941 controls (val_df$coronary 0) < 59 cases (val_df$coronary 1).
+## Area under the curve: 0.7357
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(roc\_val\_LDL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{termProject_files/figure-latex/regressionWithWeight_1With1LDL-1.pdf}}
+
+From this model, we choose a threshhold that yields the highest
+accuracy.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 1.choose the best threshold for this model and calculate the accuracy. }
+
+\NormalTok{roc\_obj }\OtherTok{\textless{}{-}} \FunctionTok{roc}\NormalTok{(}\AttributeTok{response =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary, }\AttributeTok{predictor =}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{predicted)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Setting levels: control = 0, case = 1
+\end{verbatim}
+
+\begin{verbatim}
+## Setting direction: controls < cases
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{best }\OtherTok{\textless{}{-}} \FunctionTok{coords}\NormalTok{(roc\_obj, }\StringTok{"best"}\NormalTok{, }\AttributeTok{best.method=}\StringTok{"closest.topleft"}\NormalTok{)}
+\NormalTok{best}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    threshold specificity sensitivity
+## 1 0.06707157   0.7651435   0.6271186
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{best\_threshold }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(best}\SpecialCharTok{$}\NormalTok{threshold)}
+
+\CommentTok{\# 2. predicted classes using optimal threshold}
+\NormalTok{val\_df}\SpecialCharTok{$}\NormalTok{predicted\_labels }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(val\_df}\SpecialCharTok{$}\NormalTok{predicted }\SpecialCharTok{\textgreater{}=}\NormalTok{ best\_threshold[], }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+
+\CommentTok{\# 3. accuracy}
+\NormalTok{accuracy }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(val\_df}\SpecialCharTok{$}\NormalTok{predicted\_labels }\SpecialCharTok{==}\NormalTok{ val\_df}\SpecialCharTok{$}\NormalTok{coronary)}
+\NormalTok{accuracy}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.757
+\end{verbatim}
+
+\end{document}
