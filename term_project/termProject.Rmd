@@ -18,35 +18,152 @@ library("pROC")
 library("car")
 ```
 
-# Prediction of Coronary Heart Disease with Cholesterol and Trigliceride. 
+# Coronary Heart Disease Prediction 
 
 
 ## Project Inroduction
 
-My lab results showed abnormal cholestrol and triglyceride levels, and the doctor told me that I'm at risk. For this reason,I chose this topic. The initial project plan included doing population parameter analysis too, but it turned out that doing the regression alone took lots of time so the these analysis were given up. 
+My lab results showed abnormal cholesterol and triglyceride levels, and my doctor informed me that I am at increased risk. For this reason, I chose this topic. The initial project plan included performing population parameter analysis as well, but conducting the regression alone took a significant amount of time, so those analyses were ultimately excluded.
 
-The main challenge of the project was due to the NHANHE sample design. As a result, NHANHE assigned different weights to different variables/predictors. Understanding the sample design and weights were the most challenging and time-consuming part of this project. 
+The main challenge of the project came from the NHANES sample design. Because of the complex multistage sampling approach, NHANES assigns different weights to different variables and subsamples. Understanding this design and selecting the correct weights was the most difficult and time-consuming part of the project.
 
-In a nutshell, this project aims to predict coronary heart disease with high density cholesterol, low density cholesterol and triglyceride.
+In summary, this project aims to predict coronary heart disease using high-density cholesterol, low-density cholesterol, and triglycerides.
+
+
 
 ## Data Introduction.
 
-In 2021- 2023, people partipated in NHANHE's interviews and medical exams.  The organization used multistage sampling to oversample people with certain traits, like certain race, age etc. In addition to other reasons,
-NHANHE assigned weights to some variables. For more info about the sample design and weights, please check the source provided below.
+In 2021–2023, individuals participated in NHANES interviews and medical examinations. The NHANES program uses a multistage sampling design that intentionally oversamples people with certain characteristics, such as specific racial/ethnic groups or age categories. Because of this design—and for other methodological reasons—NHANES assigns different sampling weights to different variables and subsamples. For more information about the sample design and weighting procedures, please refer to the source provided below.
 
-The following five datasets were downloaded from the site and merged together by the sequence column.
+Five datasets were downloaded from the NHANES website and merged using the participant sequence number (SEQN):
 
-Demo_L.csv records their demographic info
-HDL_L.csv records their high density cholesterol info
-TRIGLY_L.csv records the low density cholesterol level and triglyceride levels
-TCHOL_L.csv records the total cholesterol level
-MCQ_L.csv records the whether they had angina, heart attacks, or cardiavascular diseases. 
-
-L indicates the year is between 2021- 2023. All these files have different rows because only a portion of interview participants decide to take certain lab tests.The Demo_L has the most number of rows because all participants need to provide this info. For information about how the data is preprocessed, please check the two data preprocessing scripts in the project folder.
+DEMO_L.csv – demographic information<br>
+HDL_L.csv – high-density cholesterol measurements<br>
+TRIGLY_L.csv – low-density cholesterol and triglyceride measurements<br>
+TCHOL_L.csv – total cholesterol measurements<br>
+MCQ_L.csv – self-reported history of angina, heart attack, or cardiovascular disease<br>
 
 
-[Click Here for Data Source](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Laboratory&Cycle=2021-2023)
+The suffix “_L” indicates that the data come from the 2021–2023 cycle.
+These files have different numbers of rows because only a subset of interview respondents participate in particular laboratory tests. DEMO_L.csv contains the largest number of rows since all participants provide demographic information.
 
+For details on data preprocessing, please refer to the two preprocessing scripts included in the project folder.
+
+[Click Here for Data Source](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Laboratory&Cycle=2021-2023)<br>
+[Click Here to learn more about the sample design and weights](https://wwwn.cdc.gov/nchs/nhanes/tutorials/weighting.aspx)
+
+## OverView Of the Data
+
+``` {R importData000, echo = FALSE,include = FALSE}
+unweighted_data =  read.csv("cleaned_data.csv")
+weighted_data =  read.csv("cleaned_data_with_weights.csv")
+```
+
+
+### Age Distribution
+
+``` {R ageHistogramSideBySide, echo = FALSE,include = TRUE,fig.width=10, fig.height=4}
+# set plotting area: 1 row, 2 columns
+par(mfrow = c(1, 2))
+
+# ---------- Unweighted histogram ----------
+hist(
+  weighted_data$age,
+  breaks = seq(
+    floor(min(weighted_data$age, na.rm = TRUE)),
+    ceiling(max(weighted_data$age, na.rm = TRUE)),
+    by = 5
+  ),
+  main = "Unweighted",
+  xlab = "Age",
+  col = "lightblue",
+  border = "black",
+  probability = TRUE
+)
+
+# ---------- Weighted ----------
+design_age <- svydesign(
+  ids = ~SDMVPSU,
+  strata = ~SDMVSTRA,
+  weights = ~WTINT2YR,
+  nest = TRUE,
+  data = weighted_data
+)
+
+svyhist(
+  ~age,
+  design = design_age,
+  breaks = seq(
+    floor(min(weighted_data$age, na.rm = TRUE)),
+    ceiling(max(weighted_data$age, na.rm = TRUE)),
+    by = 5
+  ),
+  main = "Weighted Age Distribution",
+  xlab = "Age",
+  col = "lightblue"
+)
+
+# reset layout so it does not affect later plots
+par(mfrow = c(1, 1))
+
+```
+
+
+
+Conclusion: using the interview weight WTINT2YR changes the histogram. The histogram with weight better represents the US population, but there is still a big difference with the distribution provided by US Census Bureau.The percentage of population between our 60 and 80 is much larger than the one shown in the following image from US Census Bureau.
+
+<p align="center">
+  <img src="us_population.png" width="400">
+</p>
+
+
+### Coronary Heart Disease Prevalence Amoung US Adults
+
+
+``` {R coronaryDiseasePrevalenceWithWeightSideBySide, echo = FALSE,include = TRUE}
+par(mfrow = c(1, 2))   # 1 row, 2 columns
+
+# --- Unweighted pie chart ---
+adult_data <- subset(weighted_data, age >= 18)
+
+coronary_labels <- c("1" = "Yes", "0" = "No")
+coronary_counts <- table(coronary_labels[as.character(adult_data$coronary)])
+colors <- rainbow(length(coronary_counts))
+pct <- round(coronary_counts / sum(coronary_counts) * 100)
+coronary_lbl <- paste0(names(coronary_counts), " (", pct, "%)")
+
+pie(
+  coronary_counts,
+  labels = coronary_lbl,
+  main = "Unweighted",
+  col = colors
+)
+
+# --- Weighted pie chart ---
+cor <- adult_data$coronary
+wts <- adult_data$WTINT2YR
+
+weighted_counts <- tapply(wts, cor, sum, na.rm = TRUE)
+names(weighted_counts) <- coronary_labels[names(weighted_counts)]
+pct <- round(weighted_counts / sum(weighted_counts) * 100)
+coronary_lbl <- paste0(names(weighted_counts), " (", pct, "%)")
+colors <- rainbow(length(weighted_counts))
+
+pie(
+  weighted_counts,
+  labels = coronary_lbl,
+  main = "Weighted",
+  col = colors
+)
+
+# reset layout
+par(mfrow = c(1,1))
+
+
+```
+
+
+Conclusion: using the interview subsample weight WTINT2YR decreases the prevalence by 1%, however, both estimates are close to the CDC 5% estimation. [Data Source](https://www.cdc.gov/nchs/fastats/heart-disease.htm)
 
 
 ## Logistic Regression

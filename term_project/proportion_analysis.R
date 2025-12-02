@@ -1,13 +1,13 @@
-data = read.csv("cleaned_data.csv")
-head(data)
+unweighted_data = read.csv("cleaned_data.csv")
+head(unweighted_data)
 
 # pie chart 
 
 # ----------histogram for age ----------------
 hist(
-  data$age,
-  breaks = seq(floor(min(data$age, na.rm = TRUE)),
-               ceiling(max(data$age, na.rm = TRUE)),
+  unweighted_data$age,
+  breaks = seq(floor(min(unweighted_data$age, na.rm = TRUE)),
+               ceiling(max(unweighted_data$age, na.rm = TRUE)),
                by = 5),
   main = "Age Distribution (5-year buckets)",
   xlab = "Age",
@@ -26,7 +26,7 @@ race_labels <- c(
   "7" = "Other Race - Including Multi-Racial"
 )
 
-race_counts <- table(race_labels[as.character(data$race)])
+race_counts <- table(race_labels[as.character(unweighted_data$race)])
 colors <- rainbow(length(race_counts))
 
 # compute percentages
@@ -50,7 +50,7 @@ gender_labels <- c(
 )
 
 # Count
-gender_counts <- table(gender_labels[as.character(data$gender)])
+gender_counts <- table(gender_labels[as.character(unweighted_data$gender)])
 
 # Colors
 colors <- rainbow(length(gender_counts))
@@ -79,7 +79,7 @@ marital_labels <- c(
 )
 
 # Count
-marital_counts <- table(marital_labels[as.character(data$marital)])
+marital_counts <- table(marital_labels[as.character(unweighted_data$marital)])
 
 # Colors
 colors <- rainbow(length(marital_counts))
@@ -125,5 +125,6 @@ pie(
   main = "Coronary Distribution",
   col = colors
 )
+
 
 

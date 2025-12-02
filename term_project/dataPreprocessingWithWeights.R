@@ -1,3 +1,6 @@
+# The main differences of this version of data processing is that it didn't filter out rows with empty values.
+# This part is left to filtering in the survey object. 
+
 # Important
 
 # WTSAF2YR is for a smaller subsample. WTSAF2YR is none_zero if a person is chosen to be in the fasting subsample and did fast before providing blood specimen.
@@ -34,7 +37,8 @@ demographic_df <- rename(
   marital = DMDMARTZ
 )
 # remove useless columns
-demographic_df <- select(demographic_df, SEQN, age, race, gender, marital,SDMVPSU,SDMVSTRA)
+demographic_df <- select(demographic_df, SEQN, age, race, gender, marital,SDMVPSU,SDMVSTRA,WTINT2YR
+)
 
 
 # ----- processing the high density info ----------
