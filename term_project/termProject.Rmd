@@ -1,5 +1,5 @@
 ---
-title: "Term Project"
+title: "Coronary Heart Disease Prediction "
 output: html_document
 author: "Liangmi Zhang"
 date: "November 24, 2025"
@@ -18,7 +18,6 @@ library("pROC")
 library("car")
 ```
 
-# Coronary Heart Disease Prediction 
 
 
 ## Project Inroduction
@@ -51,6 +50,11 @@ For details on data preprocessing, please refer to the two preprocessing scripts
 
 [Click Here for Data Source](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Laboratory&Cycle=2021-2023)<br>
 [Click Here to learn more about the sample design and weights](https://wwwn.cdc.gov/nchs/nhanes/tutorials/weighting.aspx)
+
+
+## Methods
+
+Logistic regressions are used to construct models.First, we construct models without using any weights. Then, we construct the models with the most appropriate weight. At last, we construct models with the second best weight. Then, we evaluate the impact of weight of on the area under the curve. 
 
 ## OverView Of the Data
 
@@ -172,7 +176,7 @@ In this section, we try to predict if a person has a coronary heart disease.
 
 ### Logistic Regression Without Using Weights
 
-In the beginning, I ignored the various weights in the dataset because I couldn't figure out what they meant and how to use them. However, my models produced AUC around 5. I thought the poor result was because of the missing weights so I decided to use weights to improve the result. However, when I were writing this file, I found out that the low AUC was because of a bug in my original code. After correcting the bug, the ROC looks normal. The corrected result is provided below.
+In the beginning, I ignored the various weights in the dataset because I wasn’t sure what they meant or how to apply them correctly. As a result, my initial models produced AUC scores around 0.5. I assumed the poor performance was due to not using the weights, so I decided to incorporate them to improve the results. However, while writing this report, I discovered that the low AUC was actually caused by a bug in my original code. After fixing the bug, the ROC curves looked normal. The corrected models are shown below.
 
 
 ``` {R dataPreparationWithoutWeight, echo = FALSE,include = FALSE}
@@ -219,7 +223,7 @@ g <- roc(response = validation$coronary,
          predictor = validation$prob)
 
 g
-plot(g)
+
 ```
 
 Training with one predictor.
@@ -251,20 +255,22 @@ g <- roc(
 )
 
 g
-plot(g)
 ```
 
 
 ### Logistic Regression With Weights
 
-Because of low AUC values due to the bug and my belief that it was caused by ignoring weights, I decided to integrate weights in the regression. In order to learn how to use them, I studied NAHNAES's sample design, a concept that I haven't studied before and struggled to understand. Another challenge was to choose a weight since there were two weights in the dataset. It took me a while to understand the criteria - choose the weight for the smallest subsample if multiple subsamples are used in the analysis. In my case, I needed to decide which subsample was smaller because I had two: the phlebotomy subsample(people who gave blood specimen) and the fasting subsample (people who were asked to fast). It took me several hours just to decide on this. Finally, I found out that fasting subsample was smaller because people in the sample fasted first and then gave blood specimen.
+Because of the low AUC values caused by the bug—and my mistaken belief that the issue was due to ignoring the weights—I decided to incorporate survey weights into the regression. To learn how to use them properly, I studied the NHANES sample design, which I had never encountered before and initially found difficult to understand. Another challenge was selecting an appropriate weight, since the dataset contains multiple weight variables. It took time to learn the rule: when multiple subsamples are involved in the analysis, you must choose the weight corresponding to the smallest subsample.
+
+In my case, I had two relevant subsamples: the phlebotomy subsample (participants who provided blood specimens) and the fasting subsample (participants instructed to fast). Determining which one was smaller took several hours of reading documentation and examining the data. Eventually, I learned that the fasting subsample is smaller because participants must fast first before providing a blood specimen.
 
 
-#### Logistic Regression With Using Weight_2(Fasting Subsample Weight)
+#### Logistic Regression With Weight_2(Fasting Subsample Weight)
 
-In the beginning,the models couldn't converge, no matter the number of predictors that I used. This turned out to be another bug that I didn't notice I thought the failure was due to lack of datapoints in the subsample because the fasting subsample was the smallest subsample. However, somehow, the models could converge after some changes that I made, but I lost track of what change I made. 
 
-Regression with weight 2 was presented below. In order to use weight, __svydesign()__ must be used to construct the design object and this object need to be used in the regression. 
+In the beginning, the models failed to converge regardless of how many predictors I included. This turned out to be another bug that I did not initially notice. I mistakenly assumed the non-convergence was caused by an insufficient number of data points in the fasting subsample, since it is the smallest subsample in NHANES. Eventually, the models did begin to converge after I made several changes, but I unfortunately lost track of which specific change resolved the issue.
+
+The regression results using weight 2 are presented below. To correctly apply survey weights, the svydesign() function must be used to construct a survey design object, and this design object must then be supplied to the regression function.
 
 ```{R loadData2,,echo = FALSE,eval = TRUE,include = FALSE}
 result = read.csv("cleaned_data_with_weights.csv")
@@ -365,7 +371,6 @@ roc_val_three <- roc(
 
 roc_val_three
 
-plot(roc_val_three)
 
 ```
 
@@ -396,13 +401,12 @@ roc_val_LDL <- roc(
 )
 
 roc_val_LDL
-plot(roc_val_LDL)
 ```
 
 
-#### Logistic Regression With Using Weight_1(Phlebotomy Subsample Weight)
+#### Logistic Regression With Weight_1(Phlebotomy Subsample Weight)
 
-Since my initial attempts to use weight_2(fast subsample weight), the Phlebotomy weight was used because it was the weight for the second smallest subsample and also our only choice left. 
+Since my initial attempts to use weight_2(fast subsample weight) didn't work out, the Phlebotomy weight was used because it was the weight for the second smallest subsample and also my only choice left. 
 
 
 ```{R loadData3,,echo = FALSE,eval = TRUE,include = FALSE}
@@ -472,9 +476,9 @@ nrow(design_test_sub)
 
 ```
 
-##### Logistic Regression With Using Weight_1 and Two Predictors
+##### Logistic Regression With Weight_1 and Two Predictors
 
-Fitting a model using high_density_level and low_density_level. The triglyceride_level cannot be used here.
+Fitting a model using high_density_level and low_density_level. Unfortunately, the triglyceride_level cannot be used here.
 
 ```{R regressionWithWeight_1With2Predictors, echo = TRUE,include = TRUE}
 # --------- model with two predictors -----------------------
@@ -500,12 +504,11 @@ roc_val_both <- roc(
 
 roc_val_both
 
-plot(roc_val_both)
 
 ```
 
 
-##### Logistic Regression With Using Weight_1 and One Predictor
+##### Logistic Regression With Weight_1 and One Predictor
 
 We fit another model with low_density_level.
 
@@ -532,20 +535,20 @@ roc_val_LDL <- roc(
 
 roc_val_LDL
 
-plot(roc_val_LDL)
-
 ```
 
 
 ## Conclusion
 
-Even though NHANHE used multistage sampling to oversample certain subgroups the population and they emphasize that weights should be used regression, the impact of not using the weights or using a less ideal weight doesn't have much impact on the prediction results. For a logistic regression with one variable low_density_level, there is not much differences in the AUC value of the fitted models, whether the model used weights or used different weight not. 
+Even though NHANES uses a multistage sampling design to oversample certain subgroups of the population—and strongly emphasizes the importance of using weights in regression—the impact of omitting the weights, or even using a less appropriate weight, appears to have little effect on the prediction results in this project. For example, in a logistic regression model with a single predictor (low_density_level), the AUC values were nearly identical regardless of whether weights were used or which weight variable was applied.
 
 
 
-For the last model,a SLR with weight_1, we choose a threshhold that yields the highest accuracy.
+At last, we choose the the last model with one predictor and plot its ROC curve and calculate its accuracy.
 
 ``` {R name, echo = TRUE,include = TRUE}
+
+plot(roc_val_LDL)
 
 # 1.choose the best threshold for this model and calculate the accuracy. 
 
