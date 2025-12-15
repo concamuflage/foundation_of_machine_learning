@@ -45,10 +45,16 @@ Anova(model,type = 3)
 # use contr.treatment for unordered numeric group
 # use contr.poly for ordered numeric group
 
+# emmeans are just the sample means adjusted for other covariate, in our example, age. 
+# they are different from the sample means.
+
 emm_options(contrast = c("contr.treatment","contr.poly")) 
 emmeans(model,specs = "vector_group") 
 
 # -----------------check if the differences in adjusted means are significant -----------------
+
+# if the p_value is small, then the difference is significant. 
+
 emmeans(model,specs = "vector_group",contr = "pairwise",adjust = "none")
 emmeans(model,specs = "vector_group",contr = "pairwise",adjust = "bonferroni")
 emmeans(model,specs = "vector_group",contr = "pairwise",adjust = "tukey")

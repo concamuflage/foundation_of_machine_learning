@@ -1,13 +1,14 @@
 #	Quantitative interaction = same direction, different magnitude
 # Qualitative interaction = opposite direction (cross-over interaction, effect reverses)
 
-p_value: is the smallest significance level at which the data leed to rejection of the null
+# definitions
+p_value: is the smallest significance level at which the data lead to rejection of the null
 hypothesis. It gives the probability that data as unsupportive of H0 as those observed will occur when H0 is true. 
 a small p value is a strong indication that the null hypothesis is not true. The smaller tha p value, the greater the evidence for the falsity of H0. 
-
 It is related to the test_statistic.
 
-5 steps:
+
+# hypothesis testing steps
   
 1 Write the hypothesis and alpha level 
 2 Choose statistics
@@ -15,23 +16,40 @@ It is related to the test_statistic.
 4 Calculation
 5 Conclusion
 
-Rejection Rules:
+# Rejection Rules:
   
 1 abs(test statistic) >= critical value
 2 p_value <= alpha
 3 confidence interval doesn't include the mu0 value.j
 
-How to write hypothesis for one sided:
+# How to write hypothesis for one sided:
 1 a claim from manufacturer is normally in the H0
 2 what we want to prove is normall in the H1
 
-Distributions
+# Distributions
 Bernoulli: E[X] = p, Var(X) = p(1-p)
-Binomial: E[X]= np,   Var(X) = np(1-p)
+Binomial: E[X]=  np,   Var(X) = np(1-p)
 Chi_squared:          Var(X) = its degrees of freedom = n.
 
+# Type II error
 
-data$temp_level = ifelse(data$temp>=98.6,1,0)
-male_data = filter(data,sex ==1)
-nrow(subset(data, sex == 1 & temp_level == 1))
+The probability of making a type II error is controlled by the sample size.( more sample datapoints, lower probability)
+
+Concept                Symbol   Meaning: 
+Type I Error           alpha    reject h0 when h0 is true
+Type II Error           beta    fail to reject when h0 is false
+Power of a Test        1- beta.  the probabilty of correctly rejecting h0 when it is false.
+
+type II error -> you miss the real effect
+power of a test -> you detect a real effect.
+
+# Multiple Comparisons Procedures
+c = k(k-1) /2 
+expected number of rejecting H0 when it is true: a*c
+a*c/c = a -> the rate of type I error
+## bonferroni
+individual test alpha = a/c
+family wise test alpha = 1-(1-a)*c
+
+
 
