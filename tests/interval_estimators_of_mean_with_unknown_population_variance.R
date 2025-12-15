@@ -5,8 +5,8 @@ source("confidence_interval.R")
 # -------------unknown population variance------------------
 
 # ----------edit section -------------
-level = 0.99
-sample_sd = 5.085 # not variance
+level = 0.95
+sample_sd = 5.084548 # not variance
 sample_mean = 5.8
 number_of_samples = 20
 # ----------edit section -------------

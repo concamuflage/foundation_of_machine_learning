@@ -1,0 +1,10 @@
+---
+title: "README"
+output: html_document
+---
+
+There are two versions of preprocessed data.
+The one without weight lost many data due to filtering out NA cells in each columns, 
+which is not suitable for the sample design object.
+The one with weight keeps all the NA cells in each column. The actual filtering is done is the sample design object,
+instead of the dataframe.

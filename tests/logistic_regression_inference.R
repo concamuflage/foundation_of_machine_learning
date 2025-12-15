@@ -19,7 +19,7 @@ summary(m)
 # to calculate the odds ratio and its confidence interval 
 
 # ---------edit area-------------
-x = -1 # unit of difference
+difference = -1 # unit of difference
 # ---------edit area-------------
 
 

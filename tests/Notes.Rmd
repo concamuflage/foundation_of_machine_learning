@@ -1,0 +1,37 @@
+#	Quantitative interaction = same direction, different magnitude
+# Qualitative interaction = opposite direction (cross-over interaction, effect reverses)
+
+p_value: is the smallest significance level at which the data leed to rejection of the null
+hypothesis. It gives the probability that data as unsupportive of H0 as those observed will occur when H0 is true. 
+a small p value is a strong indication that the null hypothesis is not true. The smaller tha p value, the greater the evidence for the falsity of H0. 
+
+It is related to the test_statistic.
+
+5 steps:
+  
+1 Write the hypothesis and alpha level 
+2 Choose statistics
+3 Rejection rule
+4 Calculation
+5 Conclusion
+
+Rejection Rules:
+  
+1 abs(test statistic) >= critical value
+2 p_value <= alpha
+3 confidence interval doesn't include the mu0 value.j
+
+How to write hypothesis for one sided:
+1 a claim from manufacturer is normally in the H0
+2 what we want to prove is normall in the H1
+
+Distributions
+Bernoulli: E[X] = p, Var(X) = p(1-p)
+Binomial: E[X]= np,   Var(X) = np(1-p)
+Chi_squared:          Var(X) = its degrees of freedom = n.
+
+
+data$temp_level = ifelse(data$temp>=98.6,1,0)
+male_data = filter(data,sex ==1)
+nrow(subset(data, sex == 1 & temp_level == 1))
+

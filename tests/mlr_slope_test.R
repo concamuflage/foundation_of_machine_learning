@@ -16,6 +16,13 @@ number_of_predictors = 3
 
 # -------------------edit section--------------------------
 
+
+# ----------global f test ---------
+
+# just inspect the summary table for F_statistic and its associated p-value.
+# look for this line: F-statistic: 129.2 on 3 and 98 DF,  p-value: < 2.2e-16
+summary(model) 
+
 # -------global f test-------------------------------------
 
 # test if the model is significant
@@ -43,23 +50,26 @@ compareRightSided(f_statistic,f_critical)
 comparePvalueAlpha(p_value,alpha)
 
 
-# ----------individual test ------------------------------------------
+# ----------individual slope test ------------------------------------------
 
 # if the null hypothesis is rejected
 # check each p value in the summary table. 
 # remember these are threshhold when the actual p value is too small. 
 # you don't have to these values by two as this is one sided.
 
+summary(model)
 
 # two sided
-cat("two sided test\n")
 # slope/ standard_error of the slope.
 t_statistic =             # check t_value in the summary(model)
 
-df = number_of_observations - number_of_predictors -1
 t_critical = qt(1-alpha/2,df)
 t_critical 
 p_value = 2*(1-pt(abs(t_statistic),df))
 p_value 
+
+# ---- calculate confidence interval of the slope ----
+
+confint(model)
 
 

@@ -10,16 +10,16 @@ source("compare.R")
 
 # plug in the numbers
 
-sample_mean = 1
-mu0 = 0.5
-population_sd = 0.5 # do not put variance here. it is standard deviation.
-sample_size = 10
-alpha = 0.05 
+sample_mean = 1.42
+mu0 = 1.5
+population_sd = 0.7 #  NOT variance
+sample_size = 20
+alpha = 0.05
 
 # do not change the following
 
 z_statistic = (sample_mean - mu0) /(population_sd/sqrt(sample_size))
-
+z_statistic
 # two sided
 cat("two sided test\n")
 
@@ -31,7 +31,7 @@ compareTwoSided(z_statistic,z_critical)
 comparePvalueAlpha(p_value,alpha)
 
 
-# right sided
+# right sided( H1: mu > mu0) NOT H0
 cat("right sided test\n")
 z_critical= qnorm(1-alpha)
 z_critical
@@ -42,7 +42,7 @@ comparePvalueAlpha(p_value,alpha)
 
 
 
-# left sided
+# left sided ( H1: mu < mu0) NOT H0
 cat("left sided test\n")
 z_critical= qnorm(alpha)
 z_critical

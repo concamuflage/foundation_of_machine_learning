@@ -17,7 +17,6 @@ sample_size_one = 320
 sample_size_two = 360
 sample_proportion_one = 76/320
 sample_proportion_two = 94/360
-
 alpha = 0.05
 
 # ----------edit area --------------
@@ -43,7 +42,7 @@ compareTwoSided(z_statistic,z_critical)
 comparePvalueAlpha(p_value,alpha)
 
 
-# right sided
+# right sided 
 cat("right sided test\n")
 z_critical= qnorm(1-alpha)
 z_critical

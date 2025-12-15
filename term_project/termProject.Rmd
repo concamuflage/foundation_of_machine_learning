@@ -56,7 +56,7 @@ For details on data preprocessing, please refer to the two preprocessing scripts
 
 Logistic regressions are used to construct models.First, we construct models without using any weights. Then, we construct the models with the most appropriate weight. At last, we construct models with the second best weight. Then, we evaluate the impact of weight of on the area under the curve. 
 
-## OverView Of the Data
+## Data Overview
 
 ``` {R importData000, echo = FALSE,include = FALSE}
 unweighted_data =  read.csv("cleaned_data.csv")

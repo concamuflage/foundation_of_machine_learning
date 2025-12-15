@@ -1,4 +1,3 @@
-
 library(pROC)
 
 data = read.csv("assignment6_data.csv")
@@ -70,6 +69,7 @@ comparePvalueAlpha(p_value,alpha)
 # -----------question 4 -------------------------
 m = glm(temp_level ~ sex,family = binomial,data = data)
 summary(m)
+
 alpha = 0.05
 z_critical= qnorm(1-alpha/2)
 

@@ -10,6 +10,12 @@ number_of_observations = nrow(dataframe)
 
 # -----------------------------------------------
 
+# --------------simple F_test--------------------
+# just look at the F value and Pr(> F), and decide to reject or not.
+# Pr(> F) is the p_value associated with F_statistic
+# F value is the F_statistic
+
+anova(model)
 
 # ---------------F_test ---------------------------
 number_of_predictors = 1
@@ -33,6 +39,9 @@ p_value
 # f_test can only be right sided
 compareRightSided(f_statistic,f_critical)
 comparePvalueAlpha(p_value,alpha)
+
+# --------confidence interval----------
+confint(model,level = 0.95)
 
 
 
