@@ -51,5 +51,27 @@ a*c/c = a -> the rate of type I error
 individual test alpha = a/c
 family wise test alpha = 1-(1-a)*c
 
+# Ancova
+
+covariates: the continuous variables.
+the slopes for dummy variables are sample means after adjusting for other covariates.
+
+# Regression Assumptions
+1 y and each predictor are linearly related
+2 independent samples
+3 For each given x_i, residuals form a normal distribution.
+4 All normal distributions in 3 has the same standard deviation and mean. 
+
+
+# Non_parametric 
+computation expensive
+accuracy
+data heavy
+assessment.
+can work with any complex relationships.
+no insight to parameters, no confidence interval.
+
+
+
 
 

@@ -1,0 +1,11 @@
+---
+title: "code_notes"
+output: html_document
+---
+
+confint(model,level = 0.95) # gives the CI of all betas
+cor(x,y) correlation coefficient
+coef(model) - coefficients
+fitted(model) - predicted y values
+par(mfrow = c(x,y))
+

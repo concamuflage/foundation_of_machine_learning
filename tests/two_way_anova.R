@@ -1,6 +1,10 @@
 # when you have two groups and each group have multiple levels.
 library(car)
 
+# Step 1 Interaction Test
+## if no interaction, do the ANCOVA
+## else: stratify by one factor and do ONE-WAY anova.
+
 # ----------------Interaction Test ------------------------
 
 data = ToothGrowth
@@ -11,7 +15,14 @@ levels(data$dose)
 
 model = lm(len ~ supp*dose,data = data)
 
-# we usually use significance level 0.1 for the slope of the interaction term.
+# check this one for the p_value of interaction term.
+# compare it with 0.01. if the 2* (Pr(>F)  for the interaction term) is smaller than 0.01, then the slope 
+# is significant, and we have an interaction. Else, we don't. 
+
+Anova(model, type=3) 
+
+# if there is no interaction, check the summary table for ANCOVA.
+
 summary(model)
 
 # ----------------table interpretation --------------------
@@ -71,11 +82,40 @@ summary(model)
 #-------------------------------------------------------------------------------------
 
 
-Anova(model, type=3) # check this one for the p_value of interaction term.
+#------------------ if there is no interaction, reconstruct the model without the interactioin term ----
+ancova_model = lm(len ~ supp + dose,data = data)
+Anova(ancova_model, type=3) 
 
-# if there is an crossing between the lines, there is an interaction.
-with(data, interaction.plot(dose, supp, len))
 
+#              Sum Sq  Df F value    Pr(>F)    
+#(Intercept)   2326.91  1 158.828 < 2.2e-16 ***
+#  supp         205.35  1  14.017 0.0004293 ***
+#  dose        2426.43  2  82.811 < 2.2e-16 ***
+#  Residuals    820.43 56     
+# supp: After controlling for dose, the mean tooth length differs significantly between supplement types (OJ vs VC)
+# 205.35:Variation in len explained by supplement type,after adjusting for dose.
+
+summary(ancova_model)
+
+#Coefficients:
+#             Estimate  Std. Error t value Pr(>|t|)    
+#(Intercept)  12.4550     0.9883   12.603  < 2e-16 ***
+#suppVC       -3.7000     0.9883   -3.744  0.000429 ***
+#dose1         9.1300     1.2104   7.543   4.38e-10 ***
+# dose2        15.4950     1.2104  12.802  < 2e-16 ***
+
+#Residual standard error: 3.828 on 56 degrees of freedom
+#Multiple R-squared:  0.7623,	Adjusted R-squared:  0.7496 
+#F-statistic: 59.88 on 3 and 56 DF,  p-value: < 2.2e-16
+# base: suppOJ, dose0.5
+# Intercept = mean at OJ + dose 0.5, All coefficients are differences from that baseline
+# 12.455 Mean tooth length for OJ supplement at dose 0.5
+# -3.7 At the same dose, VC produces teeth that are on average 3.7 units shorter than OJ
+# 9.13 Increasing dose from 0.5 → 1.0 increases tooth length by ~9.13 units(averaged across supplements)
+# 15.49 Increasing dose from 0.5 → 2.0 increases tooth length by ~15.50 units((averaged across supplements))
+# f_statitic and p value:At least one predictor significantly explains variation in tooth length (H0:H_0:all slopes are zero})
+# 0.7623:~76% of variability in tooth length is explained by supplement + dose
+# 3.828:This is the within-group variability after accounting for supp and dose.
 
 # ---------------- if there is an interaction, stratify --------------------
 
@@ -84,6 +124,18 @@ level2 = subset(data,supp == "OJ")
 
 # ---------------- then do one way anova global test ------------------------------------
 
+# do global f_test without doing calculations, look at the Pr(>F) value in the following table.
+# is it bigger than the alpha or smaller? that is it! 
+# f_statistic is the F value in the table.
+
+model1 = aov(len ~ dose, data= level1)
+model2 = aov(len ~ dose, data= level2)
+anova(model1)
+anova(model1)
+
+##ignore in an exam, this approach gets the f_statistic from the summary table 
+#summary(model1)
+#summary(model2)
 # notes about the summary table
 
 #              Df   Sum Sq        Mean Sq      F value    Pr(>F)    
@@ -91,13 +143,7 @@ level2 = subset(data,supp == "OJ")
 # Residuals     15   (SSW)        (MSW)                              (Within Group)
 
 # F_value = MSB/MSW 
-
-
-model1 = aov(len ~ dose, data= level1)
-summary(model1)
-
-model2 = aov(len ~ dose, data= level2)
-summary(model2)
+##ignore
 
 # proceed to the following step if the Between Group difference is significant.
 
@@ -131,7 +177,7 @@ TukeyHSD(model2)
 
 
 # ----------------Test for first factor -------------------
-# H0 ∶ All underlying population means are equal across levels of the first factor, after controlling for the second factor.
+# H0∶ All underlying population means are equal across levels of the first factor, after controlling for the second factor.
 # H1: underlying populations means are not equal across levels of the factor tested after controlling for the other. 
 
 
