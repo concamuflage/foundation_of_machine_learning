@@ -15,13 +15,27 @@ source("compare.R")
 
 sample_size_one = 320
 sample_size_two = 360
-sample_proportion_one = 76/320
-sample_proportion_two = 94/360
+positive_size_one = 76
+positive_size_two = 94
+sample_proportion_one = positive_size_one/sample_size_one
+sample_proportion_two = positive_size_two/sample_size_two
 alpha = 0.05
-
 # ----------edit area --------------
 
+
 # H0:population_proportion_one = population_proportion_two
+
+# automatic. check the p-value. If it is smaller than alpha, rejct. (use this approach in exam)
+# the p_values are the same as the manual tests when correction is FALSE.
+# two sided
+prop.test(c(positive_size_one,positive_size_two),c(sample_size_one,sample_size_two),correct = FALSE,alternative = "two.sided")
+# right.sided
+prop.test(c(positive_size_one,positive_size_two),c(sample_size_one,sample_size_two),correct = FALSE,alternative = "greater") 
+# left.sided
+prop.test(c(positive_size_one,positive_size_two),c(sample_size_one,sample_size_two),correct = FALSE,alternative = "less")
+
+# manual test
+
 
 total_positive = sample_proportion_one*sample_size_one + sample_proportion_two*sample_size_two
 pooled_sample_proportion = total_positive/(sample_size_one+sample_size_two)
