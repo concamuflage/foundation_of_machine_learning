@@ -16,11 +16,6 @@ It is related to the test_statistic.
 4 Calculation
 5 Conclusion
 
-# Rejection Rules:
-  
-1 abs(test statistic) >= critical value
-2 p_value <= alpha
-3 confidence interval doesn't include the mu0 value.j
 
 # How to write hypothesis for one sided:
 1 a claim from manufacturer is normally in the H0
@@ -38,23 +33,19 @@ The probability of making a type II error is controlled by the sample size.( mor
 Concept                Symbol   Meaning: 
 Type I Error           alpha    reject h0 when h0 is true
 Type II Error           beta    fail to reject when h0 is false
-Power of a Test        1- beta.  the probabilty of correctly rejecting h0 when it is false.
+Power of a Test      1- beta    the probabilty of correctly rejecting h0 when it is false.
 
 type II error -> you miss the real effect
 power of a test -> you detect a real effect.
 
 # Multiple Comparisons Procedures
-c = k(k-1) /2 
+c = k(k-1) /2 # k is the number of group
 expected number of rejecting H0 when it is true: a*c
 a*c/c = a -> the rate of type I error
+
 ## bonferroni
 individual test alpha = a/c
 family wise test alpha = 1-(1-a)*c
-
-# Ancova
-
-covariates: the continuous variables.
-the slopes for dummy variables are sample means after adjusting for other covariates.
 
 # Regression Assumptions
 1 y and each predictor are linearly related

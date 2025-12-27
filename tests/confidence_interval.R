@@ -8,7 +8,7 @@ intervalTwoSided = function(critical_value,standard_error,mean_value ){
   lower_bound = mean_value - critical_value * standard_error
   return(list(lower_bound = lower_bound, upper_bound = upper_bound))
 }
-p
+
 # right sided/lower confidence bounds
 
 intervalRightSided = function(critical_value,standard_error,mean_value ){

@@ -1,15 +1,14 @@
 source("confidence_interval.R")
+
 # script for calculating interval estimators of mean with known population variance
-
-
 
 # -------------known population variance------------------
 
 # ----------edit section -------------
-level = 0.95
-population_sd = 0.7             # not variance
-sample_mean = 1.74
-number_of_samples = 44
+level = 0.95        # confidence level
+population_sd = 1.16             # not variance
+sample_mean = 4.8
+number_of_samples = 69
 # ----------edit section -------------
 
 

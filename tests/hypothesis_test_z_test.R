@@ -10,10 +10,10 @@ source("compare.R")
 
 # plug in the numbers
 
-sample_mean = 1.42
-mu0 = 1.5
-population_sd = 0.7 #  NOT variance
-sample_size = 20
+sample_mean = 103.29
+mu0 = 100
+population_sd = 5 #  NOT variance
+sample_size = 43
 alpha = 0.05
 
 # do not change the following

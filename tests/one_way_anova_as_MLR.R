@@ -1,13 +1,35 @@
 # doing one way anova as MLR
-# the slopes are differences in means with the base group
+# a slope is the difference between the group mean and the baseline group mean.we're talking about the sample mean here.
+# the prediction is always the sample mean of the group, given a group. 
+
+# hypothesis testing:
+# global: global testing for the MLR = testing if all the group population means are equal.
+# pairwise: testing if a slope is significant = testing if the sample means are different.We test all slopes.
+
 # H0: all the slopes are 0. (In other words, the means of all the groups are the same.)
 
-# -----------edit section -----------------------------------------------------
+
+# ---------dummy variables are created automatically,perfect in exam ---------------
+
+# this approach doesn't control which group gets to be the base group.
+
+data = read.csv("data/smoking_SBP.csv") # change here
+attach(data)
+confidence_level = 0.95
+model1 = lm(SBP ~ factor(group),data = data)
+summary(model1)
+anova(model1)
+confint(model1, level = confidence_level)
+
+
+# -----------manually construting dummy variable. -----------------------------------------------------
+
+# ----------- edit section ---------
 data = read.csv("data/smoking_SBP.csv")
 attach(data)
 head(data)
 tapply(data$SBP,data$group,mean) # just to know all the levels of the categorical predictor.
-
+confidence_level = 0.95
 # create dummy variables
 
 data$d0 = ifelse(data$group == "Current heavy smoker",1,0 )
@@ -19,6 +41,7 @@ data$d3 = ifelse(data$group == "Never smoker",1,0 )
 model0 = lm(SBP ~ d1 +d2 +d3,data = data) 
 # to check if the slope is significant/if the differences in mean with the base group is significant
 # in other words, check the p_value for each predictor. 
+
 
 # -----------edit section -----------------------------------------------------
 
@@ -40,5 +63,5 @@ anova(model0)
 # "Does this single dummy variable significantly improve the model after accounting for all previous ones?”
 
 # check the confidence interval for the difference/slope
-confint(model0, level = 0.95)
+confint(model0, level = confidence_level)
 

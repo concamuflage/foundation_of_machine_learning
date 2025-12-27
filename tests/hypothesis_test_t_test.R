@@ -8,11 +8,11 @@ source("compare.R")
 #difference = first_week - second_week
   
 #data_vector = difference
-sample_mean = 47.2
-mu0 = 50
-sample_sd = sqrt(3.1) # NOT VARIANCE
-sample_size = 8
-alpha = 0.05 
+sample_mean = 130
+mu0 = 125
+sample_sd = 42 # NOT VARIANCE
+sample_size = 58
+alpha = 0.05
 # -------change area ---------
 
 # do not change the following

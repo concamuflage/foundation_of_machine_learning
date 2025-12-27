@@ -12,7 +12,14 @@ source("compare.R")
 data = read.csv("data/smoking_SBP.csv")
 alpha = 0.05
 total_number_of_groups = length(unique(data$group))
-model = aov(data$SBP~ factor(data$group),data = data) 
+
+regiment = c("A","B","C","D","E")
+score = c(7.9,5.4,12.4,12.3,2.3)
+model = aov(score$SBP~ factor(data$group),data = data) 
+
+regiment = c("A","B","C","D","E")
+score = c(7.9,5.4,12.4,12.3,2.3)
+model = aov(score~ regiment) 
 # ------------------------------------------------------------------
 
 # do f_test without doing calculations, look at the Pr(>F) value in the following table.
